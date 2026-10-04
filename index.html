@@ -253,12 +253,27 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .tink{position:absolute;pointer-events:none;font-weight:700;font-size:1.6em;color:#fff;-webkit-text-stroke:2px #1d5fd1;paint-order:stroke fill;animation:dmg .8s ease-out forwards;z-index:5;white-space:nowrap}
 .twist-hint{margin-top:8px;font-size:.85em;background:#e8f1ff;border-radius:14px;padding:.4em .7em}
 .arena.final{background:radial-gradient(ellipse at 50% 115%,#ff9b54 0,#ffc58a 35%,rgba(255,216,168,.6) 60%,transparent 80%)}
+.arena.final[data-world="3"]{background:radial-gradient(ellipse at 50% 115%,#9775fa 0,#bac8ff 35%,rgba(219,228,255,.6) 60%,transparent 80%)}
 .arena.rage{animation:rage .9s ease-in-out infinite alternate}
 @keyframes rage{from{box-shadow:inset 0 0 0 0 rgba(255,70,30,0)}to{box-shadow:inset 0 0 70px 14px rgba(255,70,30,.5)}}
 #scr-bossintro.final .boss-name{color:#fff;-webkit-text-stroke:2px #a12a00;paint-order:stroke fill;text-shadow:0 4px 0 #a12a00;font-size:1.9em}
 #scr-bossintro.final .boss-preview{filter:drop-shadow(0 0 22px rgba(255,110,40,.85))}
 .final-badge{display:none;background:#a12a00;color:#fff;font-weight:700;border-radius:999px;padding:.25em 1em;letter-spacing:1px;animation:pop 1.2s infinite}
 #scr-bossintro.final .final-badge{display:inline-block}
+#scr-bossintro.final[data-world="3"] .boss-name{-webkit-text-stroke:2px #3b2a9e;text-shadow:0 4px 0 #3b2a9e}
+#scr-bossintro.final[data-world="3"] .boss-preview{filter:drop-shadow(0 0 22px rgba(120,90,250,.85))}
+#scr-bossintro.final[data-world="3"] .final-badge{background:#3b2a9e}
+/* ---------- Wereld 3: zwevend wolkeneiland, de/het-vragen, betekenis, opladen ---------- */
+.island.floaty{box-shadow:0 0 0 8px rgba(255,255,255,.6),0 0 0 17px rgba(255,255,255,.25),0 16px 0 10px rgba(255,255,255,.85),0 26px 18px 10px rgba(20,60,110,.18)}
+.island.floaty .scenery{animation:bob 3.2s ease-in-out infinite}
+.options.lid{grid-template-columns:1fr 1fr;gap:18px}
+.options.lid .opt{min-height:116px;font-size:clamp(38px,9vw,58px);font-weight:700}
+.options.lid .opt[data-val="de"]{border-color:#a5d8ff} .options.lid .opt[data-val="het"]{border-color:#ffc9c9}
+.options.lid .opt.correct{border-color:#26a556} .options.lid .opt.wrong{border-color:#e8833a}
+.sentence .noun{font-weight:700;color:var(--purple)}
+.box.mean{background:#e6fcf5}
+.heal{position:absolute;pointer-events:none;font-weight:700;font-size:1.8em;color:#fff;-webkit-text-stroke:2px #2b8a3e;paint-order:stroke fill;text-shadow:0 3px 0 #2b8a3e;animation:dmg 1.1s ease-out forwards;z-index:5;white-space:nowrap}
+.bossbtn.healing svg{filter:drop-shadow(0 0 18px rgba(64,192,87,.95))}
 @media (max-width:520px){
   .speak{width:100px;height:100px;font-size:50px}
   .speak.slow{width:76px;height:76px;font-size:36px}
@@ -333,7 +348,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     </div>
     <div class="progress"><div class="bar"><div id="pbar"></div></div><div class="pcount" id="pcount">0/8</div></div>
     <div class="card listen">
-      <div class="listen-q">Luister goed! Welk woord hoor je?</div>
+      <div class="listen-q" id="listen-q">Luister goed! Welk woord hoor je?</div>
       <div class="speak-row">
         <div><button class="speak" id="btn-say" aria-label="Woord nog een keer horen">🔊</button><div class="speak-label">Nog een keer</div></div>
         <div><button class="speak slow" id="btn-slow" aria-label="Woord langzaam horen">🐢</button><div class="speak-label">Langzaam</div></div>
@@ -431,8 +446,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 <div class="feedback" id="feedback" role="dialog" aria-live="polite" aria-label="Uitleg">
   <div class="fb-inner">
     <div class="fb-head"><span class="emo" id="fb-emo">🎉</span><span id="fb-msg">Super!</span></div>
-    <div class="fb-word">Het woord is: <b id="fb-word"></b> <button class="iconbtn" id="fb-say" aria-label="Woord horen" style="width:48px;height:48px;min-width:48px;font-size:22px">🔊</button></div>
+    <div class="fb-word"><span id="fb-label">Het woord is:</span> <b id="fb-word"></b> <button class="iconbtn" id="fb-say" aria-label="Woord horen" style="width:48px;height:48px;min-width:48px;font-size:22px">🔊</button></div>
     <div class="sentence" id="fb-sentence" style="font-size:1em"></div>
+    <div class="box mean" id="fb-mean" hidden><h3>📖 Wat betekent het?</h3><div id="fb-meaning"></div></div>
     <div class="box why"><h3>💡 Waarom?</h3><div id="fb-why"></div></div>
     <div class="box ezel"><h3>🐴 Ezelsbruggetje</h3><div id="fb-ezel"></div></div>
     <div class="box again" id="fb-again" hidden>💛 Geen zorgen! Dit woord komt straks nog een keer terug.</div>
@@ -451,9 +467,16 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
    het opslaan en het vrijspelen gaan dan vanzelf. Level-nummers (id) worden
    per wereld automatisch 1, 2, 3… gemaakt.
    Baas-opties (optioneel): hp (standaard 100), twists: ['shield','ghost',
-   'move','split','shrink','rage'], shieldIcon, twistHint, rageSay, final:true.
+   'move','split','shrink','rage','heal'], shieldIcon, twistHint, rageSay,
+   healSay, final:true.
+   Wereld-optie float:true = zwevend eiland op de kaart.
+   Woord-optie b = betekenis (wordt na de vraag getoond, voor woordenschat).
+   DE/HET-VRAGEN: LW(zelfstandig naamwoord, 'de'|'het', zin, uitleg, ezel, betekenis).
+   De zin moet "de woord" of "het woord" bevatten; het lidwoord wordt de lege plek.
+   Zet type:'lidwoord' op een level, of meng W(...) en LW(...) in één level.
    ========================================================= */
-const W=(w,s,f,u,e)=>({w,s,f,u,e});
+const W=(w,s,f,u,e,b)=>({w,s,f,u,e,b});
+const LW=(w,a,s,u,e,b)=>({w,a,s,u,e,b,t:'lidwoord',f:[a==='de'?'het':'de']});
 const WORLDS=[
 { id:1, name:'Zonnig Eiland', icon:'🏝️', scenery:'🌴⛰️🐚', land:'#7ed957', sand:'#f6dc9b', levels:[
 { id:1, title:'ei of ij?', sub:'Korte ei en lange ij', icon:'🥚', color:'#c98a00', options:3,
@@ -804,9 +827,192 @@ const WORLDS=[
   W('fluit','Ik speel een liedje op mijn fluit.',['flaut','floit','fluitt'],'Fluit schrijf je met ui. Aan het eind staat een t: twee fluiten.','Maak het woord langer: flui-ten. Hoor je de t? En de ui klinkt als in uil! 🎵'),
   W('trui','Ik trek mijn warme trui aan.',['truij','truy','troei'],'Trui schrijf je met ui. Er komt geen j achter.','Trui rijmt op lui en bui: allemaal eindigen ze op ui, zonder j! 🧶')
 ]}
+]},
+{ id:3, name:'Wolkeneiland', icon:'☁️', scenery:'☁️🌈⚡', land:'#c9bcff', sand:'#eef2ff', float:true, levels:[
+{ id:1, title:'-lijk: ik hoor /luk/', sub:'Net als gevaarlijk', icon:'⚠️', color:'#c2255c', options:4,
+  intro:'<p>De meester zegt: <b>kwalijk</b> – ik hoor <b>/luk/</b> en ik schrijf <b>-lijk</b>, net als <b>gevaarlijk</b>. ⚠️</p><p>Je zegt “gevaarluk”, maar je schrijft ge-vaar-<b>lijk</b>, met de lange <b>ij</b>.</p><p>Luister naar het eind: hoor je <b>/luk/</b>, met een <b>k</b> aan het eind? Denk aan <b>gevaarlijk</b> en schrijf <b>-lijk</b>!</p>',
+  boss:{name:'Kwalijke Kwal', color:'#ff8cc6', dark:'#b0306f', light:'#ffe0f0', shape:'ghost', eyes:2, deco:'dots', hp:150,
+        twists:['ghost'], twistHint:'Een kwal is soms doorzichtig 👻. Is hij weg? Wacht even, dan komt hij terug!',
+        taunts:['Blub blub! Neem me niet kwalijk, maar ik schrijf alles met -luk!','Gevaarluk? Kwaluk? Hihi, ik prik al je woorden lek!'], mid:'Au! Mijn tentakels!', lose:'Neem me niet kwalijk… jij bent veel te goed in -lijk!'},
+  words:[
+  W('gevaarlijk','Spelen op het spoor is heel gevaarlijk.',['gevaarluk','gevaarlek','gevaarlijck'],'Gevaarlijk is gevaar + -lijk. Ik hoor /luk/ en ik schrijf -lijk. Dit is het voorbeeldwoord van de meester!','Hoor je /luk/? Denk aan gevaarlijk en schrijf -lijk, met de lange ij! ⚠️'),
+  W('kwalijk','Neem me niet kwalijk, ik stootte per ongeluk je beker om.',['kwaluk','kwalek','kwallijk'],'Kwalijk: ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Aan het begin staat kw en één l: kwa-lijk.','Kwalijk en gevaarlijk: allebei /luk/, allebei -lijk! 🙊','Iemand iets kwalijk nemen = boos op iemand zijn om iets wat hij deed. “Neem me niet kwalijk” betekent: sorry.'),
+  W('lelijk','Die oude trui vind ik echt lelijk.',['leeluk','lelek','lellijk'],'Lelijk: ik hoor /leeluk/, maar ik schrijf -lijk, net als gevaarlijk. Aan het begin staat één l en één e: le-lijk.','Lelijk is het tegenovergestelde van mooi. Ik hoor /luk/, ik schrijf -lijk! 🙈'),
+  W('makkelijk','Deze som is heel makkelijk.',['makkeluk','makelijk','makkelek'],'Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Je hoort een korte a, dus een dubbele k: mak-ke-lijk.','Makkelijk is mak + ke + lijk: een hek van twee k’s en dan -lijk! 😎'),
+  W('heerlijk','Die aardbeien zijn heerlijk!',['heerluk','heerlek','herlijk'],'Heerlijk: ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Aan het begin staat heer, met twee e’s.','Heerlijk smikkelen: hoor je /luk/? Schrijf -lijk! 🍓'),
+  W('vreselijk','Ik heb vreselijk veel zin in de vakantie.',['vreseluk','vreselek','vreeselijk'],'Vreselijk: ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Vre-se-lijk: de e staat aan het eind van het stukje, dus één e.','Klap het: vre – se – lijk. Het laatste stukje is altijd -lijk! 😱'),
+  W('verschrikkelijk','Er klonk een verschrikkelijk harde knal.',['verschrikkeluk','verschrikelijk','versgrikkelijk'],'Verschrikkelijk komt van schrikken. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Let ook op schr en de dubbele k.','Van schrikken word je verschrikkelijk bang: schr-, kk en -lijk! 💥'),
+  W('eindelijk','Eindelijk is het vakantie!',['eindeluk','ijndelijk','eindelek'],'Eindelijk komt van einde, met de korte ei. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk.','Aan het einde komt -lijk: eindelijk! Korte ei vooraan, lange ij achteraan. 🎉'),
+  W('hartelijk','Hartelijk gefeliciteerd met je verjaardag!',['harteluk','hartelek','hardelijk'],'Hartelijk komt van hart. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk.','Uit de grond van je hart: hart + e + lijk! ❤️','Hartelijk = heel vriendelijk en warm. Hartelijk gefeliciteerd = ik wens je heel veel geluk.'),
+  W('pijnlijk','Mijn knie is nog een beetje pijnlijk.',['pijnluk','peinlijk','pijnlek'],'Pijnlijk is pijn + -lijk. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Pijn schrijf je met de lange ij.','Twee keer de lange ij: p-IJ-nl-IJ-k! Pijn + lijk. 🤕'),
+  W('mogelijk','Kom zo snel mogelijk naar huis.',['mogeluk','moogelijk','mogelek'],'Mogelijk komt van mogen. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Mo-ge-lijk: één o.','Alles is mogelijk, als je maar onthoudt: /luk/ = -lijk! ✨'),
+  W('hopelijk','Hopelijk schijnt morgen de zon.',['hopeluk','hoopelijk','hopelek'],'Hopelijk komt van hopen. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Ho-pe-lijk: één o.','Ik hoop het, hopelijk! Hoor je /luk/? Schrijf -lijk. 🤞'),
+  W('ongelooflijk','Die goocheltruc was ongelooflijk knap.',['ongeloofluk','ongeloflijk','ongelooflek'],'Ongelooflijk komt van geloven: iets wat je bijna niet kunt geloven. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk.','On + ge + loof + lijk: een lang woord, maar het eind is gewoon -lijk! 🎩'),
+  W('schadelijk','Te veel snoep is schadelijk voor je tanden.',['schadeluk','schaadelijk','sgadelijk'],'Schadelijk komt van schade. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk.','Schade + lijk = schadelijk. Begin met sch, eindig met -lijk! 🦷','Schadelijk = slecht voor je, het kan iets kapotmaken of ziek maken.'),
+  W('smakelijk','Eet smakelijk, allemaal!',['smakeluk','smaakelijk','smakelek'],'Smakelijk komt van smaak. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Sma-ke-lijk: één a.','Eet smakelijk! Je zegt /luk/, maar je schrijft -lijk. 🍽️')
+]},
+{ id:2, title:'-ig: ik hoor /ug/', sub:'Net als giftig', icon:'🍄', color:'#2b8a3e', options:4,
+  intro:'<p>De meester zegt: <b>moedig</b> – ik hoor <b>/ug/</b> en ik schrijf <b>-ig</b>, net als <b>giftig</b>. 🍄</p><p>Je zegt “giftug”, maar je schrijft gif-t<b>ig</b>, met een <b>i</b> en een <b>g</b>.</p><p>Hoor je aan het eind een zachte <b>/ug/</b>? Denk aan <b>giftig</b> en schrijf <b>-ig</b>!</p>',
+  boss:{name:'Gifpad Guus', color:'#b07ce8', dark:'#6a3bb0', light:'#ecdcff', shape:'wide', eyes:2, deco:'dots', hp:155,
+        twists:['shield'], shieldIcon:'🍄', twistHint:'Hij verstopt zich onder een gifpaddenstoel 🍄. Wacht even, dan komt hij weer tevoorschijn!',
+        taunts:['Kwaak! Ik ben zo giftug als wat!','Moedug? Jij? Kwaak kwaak, ik schrijf alles met -ug!'], mid:'Kwaak! Mijn gifbultjes!', lose:'Kwaaak… jij bent moedig én je kent -ig!'},
+  words:[
+  W('giftig','Pas op, die paddenstoel is giftig!',['giftug','giftich','giftieg'],'Giftig is gif + t + -ig. Ik hoor /ug/ en ik schrijf -ig. Dit is het voorbeeldwoord van de meester!','Hoor je /ug/? Denk aan giftig en schrijf -ig! ☠️🍄'),
+  W('moedig','De brandweerman is heel moedig.',['moedug','moedich','moetig'],'Moedig: ik hoor /ug/ en ik schrijf -ig, net als giftig. Het komt van moed, met een d.','Moedig en giftig: allebei /ug/, allebei -ig! 🦸'),
+  W('nodig','Ik heb een pen nodig.',['nodug','noodig','nodich'],'Nodig: ik hoor /ug/ en ik schrijf -ig, net als giftig. No-dig: de o staat aan het eind van het stukje, dus één o.','Wat heb je nodig? Een i en een g aan het eind! ✏️'),
+  W('handig','Een zakmes is heel handig.',['handug','hantig','handich'],'Handig komt van hand. Ik hoor /ug/ en ik schrijf -ig, net als giftig.','Handig: met je handen kun je alles. Hand + ig! 🛠️'),
+  W('bezig','Mama is bezig met koken.',['bezug','beezig','bezich'],'Bezig: ik hoor /ug/ en ik schrijf -ig, net als giftig. Be-zig: één e en een z.','Druk bezig als een bij: b-e-z-i-g! 🐝'),
+  W('aardig','Onze nieuwe buurvrouw is erg aardig.',['aardug','aartig','aardich'],'Aardig: ik hoor /ug/ en ik schrijf -ig, net als giftig. Aar-dig: met een d.','Een aardig iemand is lief. Je hoort /ug/, je schrijft -ig! 😊'),
+  W('grappig','Die mop is echt grappig.',['grappug','grapig','grappich'],'Grappig komt van grap. Ik hoor /ug/ en ik schrijf -ig, net als giftig. Korte a, dus een dubbele p.','Grap + p + ig: twee p’s houden de a kort! 🤡'),
+  W('gierig','De reus is gierig: hij deelt nooit iets.',['gierug','girig','gierich'],'Gierig: ik hoor /ug/ en ik schrijf -ig, net als giftig. Aan het begin staat gie, met ie.','Een gierige reus houdt alles voor zich: ook de i en de g aan het eind! 💰','Gierig = je geld of spullen niet willen delen of uitgeven.'),
+  W('slordig','Mijn kamer is een beetje slordig.',['slordug','slortig','slordich'],'Slordig: ik hoor /ug/ en ik schrijf -ig, net als giftig. In het midden staat een d: slor-dig.','Een slordige kamer, maar een nette -ig aan het eind! 🧦'),
+  W('prachtig','De zonsondergang is prachtig.',['prachtug','pragtig','prachtich'],'Prachtig komt van pracht. Ik hoor /ug/ en ik schrijf -ig, net als giftig. In pracht staat cht.','Pracht + ig = prachtig: eerst cht, dan -ig! 🌅'),
+  W('voorzichtig','Doe voorzichtig met het glas!',['voorzichtug','voorzigtig','vorzichtig'],'Voorzichtig: ik hoor /ug/ en ik schrijf -ig, net als giftig. In het midden staat cht: voor-zich-tig.','Wees voorzichtig: voor + zicht + ig. 🥛'),
+  W('nieuwsgierig','Mijn kat is erg nieuwsgierig.',['nieuwsgierug','nieuwsgirig','niewsgierig'],'Nieuwsgierig is nieuws + gierig: je wilt al het nieuws weten! Ik hoor /ug/ en ik schrijf -ig, net als giftig.','Wie nieuwsgierig is, wil al het nieuws weten: nieuws + gierig! 🐱'),
+  W('mistig','Het is vanochtend erg mistig buiten.',['mistug','mistich','misstig'],'Mistig komt van mist. Ik hoor /ug/ en ik schrijf -ig, net als giftig.','Mist + ig = mistig. Op het Wolkeneiland is het vaak mistig! 🌫️'),
+  W('winderig','Op het strand is het vandaag winderig.',['winderug','winnderig','winderich'],'Winderig komt van wind. Ik hoor /ug/ en ik schrijf -ig, net als giftig.','Wind + er + ig: de wind blaast de g niet weg! 🌬️'),
+  W('twintig','In onze klas zitten twintig kinderen.',['twintug','twinttig','twientig'],'Twintig: ik hoor /twintug/ en ik schrijf -ig, net als giftig. Alle tientallen eindigen zo: twintig, dertig, veertig.','Twintig, dertig, veertig: tel je verder, dan blijft het -ig! 🔢'),
+  W('rustig','In de bibliotheek moet je rustig zijn.',['rustug','rustich','russtig'],'Rustig komt van rust. Ik hoor /ug/ en ik schrijf -ig, net als giftig.','Rust + ig = rustig. Sssst… 🤫')
+]},
+{ id:3, title:'-lijk of -ig?', sub:'Luister naar het eind', icon:'👂', color:'#5f3dc4', options:4,
+  intro:'<p>Nu door elkaar! Luister goed naar het <b>eind</b> van het woord. 👂</p><p>Hoor je <b>/luk/</b>, met een <b>k</b> aan het eind? Dan schrijf je <b>-lijk</b>, net als <b>gevaarlijk</b>.</p><p>Hoor je <b>/ug/</b>, met een zachte <b>g</b> aan het eind? Dan schrijf je <b>-ig</b>, net als <b>giftig</b>.</p>',
+  boss:{name:'Twijfelwolk Wiebel', color:'#c5d0de', dark:'#5c6b80', light:'#f1f4f8', shape:'round', eyes:3, top:'cloud', hp:160,
+        twists:['split','move'], twistHint:'Hij zweeft heen en weer, en halverwege splitst hij zich in tweeën! Tik ze gewoon allebei.',
+        taunts:['-lijk of -ig? -ig of -lijk? Ik twijfel… en jij ook!','Ik wiebel al je woorden door elkaar!'], mid:'Hé! Nu twijfelen we met z’n tweeën!', lose:'Geen twijfel meer: jij hoort het verschil!'},
+  words:[
+  W('feestelijk','De klas ziet er feestelijk uit met alle slingers.',['feestelig','feesteluk','feestelich'],'Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Aan het eind hoor je een k, dus niet -ig.','Een feest met een k aan het eind? Feeste-LIJK! 🎈'),
+  W('tijdelijk','De weg is tijdelijk dicht.',['tijdelig','tijdeluk','teidelijk'],'Tijdelijk komt van tijd. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk.','Tijd + e + lijk: twee keer de lange ij! ⏳','Tijdelijk = maar voor een korte tijd, niet voor altijd.'),
+  W('letterlijk','Hij deed letterlijk alles wat de juf zei.',['letterlig','letterluk','leterlijk'],'Letterlijk komt van letter. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk.','Letter voor letter: letter + lijk! 🔤','Letterlijk = precies zoals het gezegd wordt.'),
+  W('waarschijnlijk','Morgen gaat het waarschijnlijk regenen.',['waarschijnlig','waarschijnluk','waarsgijnlijk'],'Waarschijnlijk: ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. In het midden staat schijn, met sch en de lange ij.','Waar + schijn + lijk: het lijkt waar, dus -lijk! ☔','Waarschijnlijk = het is bijna zeker.'),
+  W('afschuwelijk','Die spruitjes smaken afschuwelijk!',['afschuwelig','afschuweluk','afschuwlijk'],'Afschuwelijk: ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Vergeet de e niet: af-schu-we-lijk.','Bah! Afschuwelijk eindigt met een harde k: -lijk! 🤢'),
+  W('namelijk','Ik ben blij, ik ben namelijk jarig!',['namelig','nameluk','naamelijk'],'Namelijk: ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Na-me-lijk: één a.','Namelijk legt iets uit. Hoor je de k aan het eind? -lijk! 💬'),
+  W('geduldig','Wacht geduldig op je beurt.',['geduldelijk','geduldug','gedultig'],'Geduldig komt van geduld. Ik hoor /ug/ en ik schrijf -ig, net als giftig. Aan het eind hoor je geen k, dus niet -lijk.','Geduld + ig = geduldig. Rustig wachten en dan -ig! ⏰'),
+  W('zuinig','Wees zuinig op je nieuwe schoenen.',['zuinlijk','zuinug','zuinich'],'Zuinig: ik hoor /ug/ en ik schrijf -ig, net als giftig. Geen k aan het eind, dus niet -lijk.','Zuinig zijn op je spullen, en zuinig met letters: gewoon -ig! 👟','Zuinig zijn op iets = er goed voor zorgen. Zuinig zijn kan ook: niet te veel geld uitgeven.'),
+  W('schattig','Wat een schattig klein poesje!',['schattelijk','schattug','schatig'],'Schattig: ik hoor /ug/ en ik schrijf -ig, net als giftig. Korte a, dus een dubbele t.','Schat + t + ig: een schattig poesje is een schatje! 🐱'),
+  W('ijverig','Iedereen werkt ijverig aan zijn werkstuk.',['ijverlijk','ijverug','eiverig'],'IJverig: ik hoor /ug/ en ik schrijf -ig, net als giftig. Het begint met de lange ij.','Een ijverige bij werkt de hele dag: lange ij vooraan, -ig achteraan! 🐝','IJverig = hard en goed je best doen.'),
+  W('heftig','Het onweer was heel heftig.',['heftelijk','heftug','hevtig'],'Heftig: ik hoor /ug/ en ik schrijf -ig, net als giftig. In het midden staat een f.','Heftig en giftig rijmen: allebei -ftig! ⛈️'),
+  W('gulzig','De hond eet gulzig zijn bak leeg.',['gulzelijk','gulzug','gulsig'],'Gulzig: ik hoor /ug/ en ik schrijf -ig, net als giftig. In het midden staat een z.','Hap slok weg! Gulzig: de z zoemt en dan -ig. 🐶','Gulzig = heel snel en veel eten, alsof je nooit genoeg hebt.'),
+  W('dorstig','Na het rennen ben ik heel dorstig.',['dorstelijk','dorstug','dorsstig'],'Dorstig komt van dorst. Ik hoor /ug/ en ik schrijf -ig, net als giftig.','Dorst + ig = dorstig. Drink een glas water! 🥤'),
+  W('plakkerig','Mijn handen zijn plakkerig van het snoep.',['plakkerlijk','plakkerug','plakerig'],'Plakkerig komt van plakken. Ik hoor /ug/ en ik schrijf -ig, net als giftig. Korte a, dus een dubbele k.','Plak-ke-rig: twee k’s plakken aan elkaar, en dan -ig! 🍭'),
+  W('koppig','Mijn broertje is soms erg koppig.',['koppelijk','koppug','kopig'],'Koppig: ik hoor /ug/ en ik schrijf -ig, net als giftig. Korte o, dus een dubbele p.','Een koppig kopje wil niet luisteren: kop + p + ig! 🐐','Koppig = steeds je eigen zin willen doen en niet willen luisteren.')
+]},
+{ id:4, title:'De of het?', sub:'Lidwoorden, deel 1', icon:'🥁', color:'#e8590c', type:'lidwoord',
+  intro:'<p>Je hoort een woord. Zeg je <b>de</b> of <b>het</b>? 🥁</p><p>🔎 <b>Die/dat-test:</b> de doelman <b>die</b> de bal vangt, het drumstel <b>dat</b> hard klinkt. Past <b>die</b>? Dan is het een <b>de</b>-woord. Past <b>dat</b>? Dan is het een <b>het</b>-woord.</p><p>🧩 Bij een samengesteld woord kijk je naar het <b>laatste stukje</b>: drum + <b>het</b> stel = <b>het</b> drumstel.<br>🐣 Verkleinwoorden (met <b>-je</b>) zijn altijd <b>het</b>: het trapveldje.<br>☝️ En <b>een</b>? Die past bij allebei: een doelman, een drumstel. Je zegt <b>een</b> als het niet over één bepaald ding gaat.</p>',
+  boss:{name:'Drummer Bonkebas', color:'#ff922b', dark:'#c2410c', light:'#ffe8cc', shape:'square', eyes:2, top:'headphones', deco:'teeth', hp:165,
+        twists:['shield'], shieldIcon:'🥁', twistHint:'Hij verstopt zich achter zijn grote trommel 🥁. Wacht even, dan komt hij weer tevoorschijn!',
+        taunts:['Boem boem! De of het? Ik trommel al je lidwoorden door elkaar!','Mijn drumstel is zo hard, je hoort niks meer! Boem!'], mid:'Au! Mijn drumstokjes!', lose:'Boem… jij kent alle de- en het-woorden!'},
+  words:[
+  LW('drumstel','het','Mijn broer oefent elke dag op het drumstel.','Het is het drumstel. Drumstel is drum + stel. Het laatste stukje bepaalt het lidwoord: het stel, dus ook het drumstel.','Die/dat-test: het drumstel dat zo hard klinkt. Je zegt dat, dus het! (Een drumstel kan ook, als het niet om één bepaald drumstel gaat.) 🥁','Een set trommels en bekkens waarop je drumt.'),
+  LW('trapveldje','het','Na school voetballen we op het trapveldje.','Trapveldje eindigt op -je: het is een verkleinwoord. Verkleinwoorden zijn altijd het-woorden: het trapveldje.','Klein is altijd het: het trapveldje, het balletje, het hondje. 🐣⚽','Een klein grasveldje in de buurt waar je kunt voetballen.'),
+  LW('doelman','de','Mijn vriend is de doelman van ons voetbalteam.','Het is de doelman. Doelman is doel + man. Het laatste stukje bepaalt het lidwoord: de man, dus ook de doelman.','Woorden voor mensen zijn meestal de-woorden: de doelman, de juf, de meester. Die/dat-test: de doelman die de bal vangt. 🧤','De keeper: de speler die in het doel staat en de bal tegenhoudt.'),
+  LW('weekblad','het','Opa leest elke zaterdag het weekblad.','Het is het weekblad. Weekblad is week + blad. Het laatste stukje bepaalt het lidwoord: het blad, dus ook het weekblad.','Die/dat-test: het weekblad dat elke week komt. Dat? Dan het! 📰','Een tijdschrift dat elke week uitkomt.'),
+  LW('geroezemoes','het','Voor de voorstelling hoor je het geroezemoes in de zaal.','Het is het geroezemoes. Woorden die met ge- beginnen zijn vaak het-woorden: het geroezemoes, het geluid, het gesprek.','Ge- aan het begin? Denk vaak aan het: het gebouw, het gevaar, het geroezemoes. (Let op: niet altijd!) 🗣️','Het geluid van veel mensen die tegelijk zachtjes praten.'),
+  LW('humor','de','De hele klas houdt van de humor van de meester.','Het is de humor. Humor is een de-woord. Dat moet je gewoon onthouden.','Die/dat-test: de humor die de meester heeft. Die? Dan de! 😄','Grappig zijn, of grappen kunnen maken en snappen.'),
+  LW('kluwen','de','Kijk, de kat speelt met de kluwen wol.','De meester zegt: de kluwen. (In het woordenboek mag ook het kluwen, maar wij leren de kluwen, net als in de klas.)','Die/dat-test: de kluwen die over de vloer rolt. Die? Dan de! 🧶','Een bol van opgerolde wol of draad.'),
+  LW('boek','het','Ik lees het boek over dinosaurussen.','Boek is een het-woord: het boek. Heb je er meer? Dan wordt het de boeken, want meervoud is altijd de.','Die/dat-test: het boek dat ik lees. Dat? Dan het! 📖'),
+  LW('raam','het','Ik kijk door het raam naar buiten.','Raam is een het-woord: het raam. Dat moet je onthouden.','Die/dat-test: het raam dat openstaat. Dat? Dan het! 🪟'),
+  LW('konijn','het','Ik geef het konijn een wortel.','Konijn is een het-woord: het konijn.','Die/dat-test: het konijn dat huppelt. Dat? Dan het! 🐰'),
+  LW('meisje','het','Ik speel met het meisje van hiernaast.','Meisje eindigt op -je, net als een verkleinwoord. Daarom is het het meisje, ook al is een meisje een persoon!','Alles op -je is het: het meisje, het trapveldje, het katje. 👧'),
+  LW('fiets','de','Ik zet de fiets in de schuur.','Fiets is een de-woord: de fiets.','Die/dat-test: de fiets die in de schuur staat. Die? Dan de! 🚲'),
+  LW('deur','de','Wil jij de deur even dichtdoen?','Deur is een de-woord: de deur.','Die/dat-test: de deur die piept. Die? Dan de! 🚪'),
+  LW('klok','de','Ik kijk op de klok hoe laat het is.','Klok is een de-woord: de klok.','Die/dat-test: de klok die tikt. Die? Dan de! 🕐'),
+  LW('tafel','de','Wij dekken samen de tafel.','Tafel is een de-woord: de tafel. Maar let op: het tafeltje, want een verkleinwoord is altijd het!','Die/dat-test: de tafel die in de keuken staat. Die? Dan de! 🍽️'),
+  LW('paard','het','Ik borstel het paard in de stal.','Paard is een het-woord: het paard.','Die/dat-test: het paard dat galoppeert. Dat? Dan het! 🐴')
+]},
+{ id:5, title:'Woorden van de meester', sub:'Woordenschat uit de klas', icon:'📚', color:'#1864ab', options:4,
+  intro:'<p>Dit zijn de <b>woordenschat-woorden</b> uit jouw klas! 📚</p><p>Luister goed en kies hoe je het woord schrijft. Na elke vraag zie je ook wat het woord <b>betekent</b>. Zo leer je ze dubbel goed!</p>',
+  boss:{name:'Doelman Grijpgraag', color:'#4dabf7', dark:'#1864ab', light:'#d0ebff', shape:'tall', eyes:2, top:'cap', hp:170,
+        twists:['shield','heal'], shieldIcon:'🧤', healSay:'Slokje limonade! Ik hou het nog wel even uit!',
+        twistHint:'Hij vangt soms je tikken met zijn keepershandschoenen 🧤. En één keer drinkt hij limonade 🥤 en wordt hij een beetje sterker. Gewoon doorgaan, jij wint!',
+        taunts:['Ik ben de beste doelman van het trapveldje! Niemand scoort bij mij!','Ik hou het nog uren uit! Hahaha!'], mid:'Hé! Die bal was raak!', lose:'Doelpunt! Jij kent alle woorden van de meester!'},
+  words:[
+  W('drumstel','De drummer speelt een stoer liedje op zijn drumstel.',['drumstell','drummstel','drumsdel'],'Drumstel is drum + stel: je zet de twee stukjes gewoon achter elkaar. Eén m en één l.','Een stel trommels om op te drummen: drum + stel! 🥁','Een set trommels en bekkens waarop je drumt.'),
+  W('trapveldje','Op het trapveldje achter school voetballen we in de pauze.',['trapveltje','trapvelje','trapfeldje'],'Trapveldje is trap + veld + je. Veld eindigt op een d (velden), en die d blijft staan: trapveldje.','Op een veld trap je tegen de bal: trap + veld + je. Maak het langer: velden. Hoor je de d? ⚽','Een klein grasveldje in de buurt waar je kunt voetballen.'),
+  W('doelman','De doelman houdt de bal tegen met zijn handen.',['doelmann','doulman','doellman'],'Doelman is doel + man. Doel met oe en één l, man met één n.','De man in het doel: doel + man! 🧤','De keeper: de speler die in het doel staat en de bal tegenhoudt.'),
+  W('weekblad','In het weekblad staat elke week een nieuwe strip.',['weekblat','weekbladt','wekblad'],'Weekblad is week + blad. Blad eindigt op een d: maak het langer, bladen. Week schrijf je met ee.','Elke week een blad: week + blad. Bladen: hoor je de d? 📰','Een tijdschrift dat elke week uitkomt.'),
+  W('spontaan','Ze zei spontaan ja toen ik vroeg of ze mee wilde spelen.',['spontan','sponntaan','spontaam'],'Spontaan schrijf je met aa aan het eind: spon-taan. Het laatste stukje is gesloten, dus twee a’s.','Spon-taan: aan het eind staat “taan”, met aa, net als “gaan” en “staan”! 🙋','Iets uit jezelf doen, zonder dat iemand het vraagt en zonder er lang over na te denken.'),
+  W('geroezemoes','Voor de film begon, hoorde je een zacht geroezemoes in de zaal.',['geroesemoes','geroezemoess','gerozemoes'],'Geroezemoes: ge + roe + ze + moes. In het midden hoor je een z, en twee keer oe.','Het klinkt als zoemende bijtjes: ge-roe-zzze-moes, met een z en twee keer oe! 🐝','Het geluid van veel mensen die tegelijk zachtjes praten.'),
+  W('humor','Onze meester heeft veel humor: hij maakt altijd grapjes.',['humer','huumor','hummor'],'Humor: hu-mor. De u staat aan het eind van het stukje, dus één u en één m.','Hu-mor: klap het in twee stukjes. Je hoort “mor”, en schrijft ook -mor! 😄','Grappig zijn, of grappen kunnen maken en snappen.'),
+  W('slenteren','Op zondag slenteren we langzaam door het park.',['slentteren','slenterren','slentern'],'Slenteren: slen-te-ren. Eén t en één r.','Wie slentert heeft geen haast, en ook geen dubbele letters nodig: slen-te-ren! 🚶','Langzaam en rustig lopen, zonder haast.'),
+  W('kluwen','Oma rolt de wol op tot een dikke kluwen.',['kluwe','kluuwen','kluven'],'Kluwen: klu-wen. Eén u en een w in het midden.','Een kluwen wol rolt: klu-wen, met een w van wol! 🧶','Een bol van opgerolde wol of draad.'),
+  W('uithouden','Ik kan het bijna niet uithouden van de spanning!',['uithoudden','uithauden','uitouden'],'Uithouden is uit + houden. Houden schrijf je met ou en één d.','Uit + houden: ik houd het uit! Houden met ou, net als oud. 💪','Iets volhouden, ook al is het moeilijk of vervelend.'),
+  W('wedstrijd','Zaterdag speel ik een wedstrijd met mijn team.',['wetstrijd','wedstreid','wedstrijt'],'Wedstrijd is wed + strijd. Strijd schrijf je met de lange ij en een d: strijden.','Wed + strijd: maak het langer, wedstrijden. Hoor je de d? 🏆','Een spel waarin je probeert te winnen van een ander.'),
+  W('tijdschrift','Mama leest een tijdschrift over tuinen.',['teidschrift','tijdsgrift','tijtschrift'],'Tijdschrift is tijd + schrift. Tijd met de lange ij en een d, schrift met sch.','Tijd + schrift: het komt elke tijd (week of maand) opnieuw uit! 📒','Een blad met verhalen en foto’s dat elke week of maand uitkomt.'),
+  W('trommel','De drummer slaat hard op de trommel.',['tromel','trommul','troommel'],'Trommel: trom-mel. Je hoort een korte o, dus de m dubbel.','Boem boem: een trommel heeft twee stokjes, en trommel heeft twee m’s! 🥁','Een muziekinstrument waar je met stokjes op slaat.'),
+  W('fluisteren','In de klas mag je alleen fluisteren.',['fluistteren','fluysteren','fluistere'],'Fluisteren: flui-ste-ren. Met ui, net als in fluit.','Fluisteren klinkt als een zachte fluit: allebei met ui! 🤫','Heel zachtjes praten.'),
+  W('gemompel','Uit de kamer klonk zacht gemompel.',['gemommpel','gemompul','gemombel'],'Gemompel: ge-mom-pel. In het midden staat mp.','Mompel eens: mmm-pel. Je lippen gaan dicht bij de m en de p! 🗨️','Zacht en onduidelijk praten, zodat je het bijna niet verstaat.')
+]},
+{ id:6, title:'De of het? Deel 2', sub:'Meervoud, verkleinwoord en meer', icon:'🔎', color:'#0b7285', type:'lidwoord',
+  intro:'<p>Nu wordt het lastiger! 🔎 Een paar handige regels:</p><p>👥 <b>Meer dan één</b> (meervoud) is <b>altijd de</b>: het boek, maar de boeken.<br>🐣 <b>Verkleinwoorden</b> zijn <b>altijd het</b>: de hond, maar het hondje.<br>🧩 Samengesteld woord? Kijk naar het <b>laatste stukje</b>: regen + <b>de</b> boog = <b>de</b> regenboog.<br>📏 Woorden op <b>-heid</b> en <b>-ing</b> zijn <b>de</b>: de gezondheid, de oefening.</p><p>🔎 Twijfel je? Doe de <b>die/dat-test</b>: de wedstrijd <b>die</b>, het museum <b>dat</b>.<br>☝️ <b>Een</b> past bij allebei: een hond, een hondje. Maar in het meervoud zeg je nooit een!</p>',
+  boss:{name:'Spook Geroezemoes', color:'#e7f5ff', dark:'#3b5bdb', light:'#ffffff', shape:'ghost', eyes:2, top:'cloud', deco:'dots', hp:180,
+        twists:['ghost','split'], twistHint:'Hij wordt soms onzichtbaar 👻 en halverwege splitst hij zich in tweeën. Wacht even als hij weg is, en tik ze dan allebei!',
+        taunts:['Psst… psst… hoor je mijn geroezemoes? De of het? Wie zal het zeggen…','Ik fluister alle lidwoorden door elkaar! Oehoehoe!'], mid:'Psst! Nu fluisteren we met z’n tweeën!', lose:'Oehoe… jij hoort precies of het de of het is!'},
+  words:[
+  LW('kinderen','de','Na de bel rennen de kinderen naar buiten.','Kinderen is meervoud: meer dan één kind. Meervoud is altijd de: de kinderen. (Eén kind is wel het kind!)','Meer dan één? Altijd de! De kinderen, de boeken, de drumstellen. 👫'),
+  LW('boeken','de','Ik zet de boeken terug in de kast.','Eén boek is het boek. Maar boeken is meervoud, en meervoud is altijd de: de boeken.','Meer dan één? Altijd de! Het boek, maar de boeken. 📚'),
+  LW('meisjes','de','Op het schoolplein springen de meisjes touwtje.','Strikvraag! Eén meisje is het meisje. Maar meisjes is meervoud, en meervoud is altijd de: de meisjes.','Meervoud wint altijd, ook van een verkleinwoord: het meisje, maar de meisjes. 👧👧'),
+  LW('hondje','het','Ik pas op het hondje van de buren.','De hond, maar het hondje! Hondje is een verkleinwoord, en verkleinwoorden zijn altijd het.','Maak je iets klein met -je? Dan wordt het altijd het: de hond → het hondje. 🐶'),
+  LW('tafeltje','het','Mijn zusje tekent aan het tafeltje.','De tafel, maar het tafeltje! Tafeltje is een verkleinwoord, en verkleinwoorden zijn altijd het.','Klein is altijd het: de tafel → het tafeltje. 🪑'),
+  LW('fietsje','het','Mijn broertje rijdt op het fietsje met zijwieltjes.','De fiets, maar het fietsje! Fietsje is een verkleinwoord, en verkleinwoorden zijn altijd het.','Klein is altijd het: de fiets → het fietsje. 🚲'),
+  LW('doelpunt','het','In de laatste minuut maakte Sanne het doelpunt.','Doelpunt is doel + punt. Het laatste stukje bepaalt het lidwoord: het punt, dus ook het doelpunt.','Die/dat-test: het doelpunt dat in het doel vliegt. Dat? Dan het! ⚽'),
+  LW('wedstrijd','de','Wie wint straks de wedstrijd?','Wedstrijd is wed + strijd. Het laatste stukje bepaalt het lidwoord: de strijd, dus ook de wedstrijd.','Die/dat-test: de wedstrijd die wij winnen. Die? Dan de! 🏆'),
+  LW('publiek','het','Na afloop klapt het publiek heel hard.','Het publiek: dat zijn alle mensen die komen kijken of luisteren. Publiek is een het-woord. Dat moet je onthouden.','Die/dat-test: het publiek dat klapt. Dat? Dan het! 👏'),
+  LW('tijdschrift','het','Mama leest het tijdschrift op de bank.','Tijdschrift is tijd + schrift. Het laatste stukje bepaalt het lidwoord: het schrift, dus ook het tijdschrift.','In de klas schrijf je in het schrift. Dus ook: het tijdschrift! 📒'),
+  LW('oefening','de','De meester legt de oefening uit op het bord.','Woorden die eindigen op -ing, zoals oefening en tekening, zijn de-woorden: de oefening.','-ing aan het eind? Dan de: de oefening, de tekening, de verrassing. ✏️'),
+  LW('gezondheid','de','Groente is goed voor de gezondheid.','Woorden op -heid zijn altijd de-woorden: de gezondheid, de waarheid, de snelheid.','Hatsjoe! Gezondheid! En onthoud: -heid is altijd de. 🤧'),
+  LW('museum','het','Met de klas bezoeken we het museum.','Woorden op -um zijn bijna altijd het-woorden: het museum, het centrum, het album.','Die/dat-test: het museum dat vol schilderijen hangt. Dat? Dan het! 🖼️'),
+  LW('onweer','het','Tijdens het onweer blijven we lekker binnen.','Onweer is on + weer. Het laatste stukje bepaalt het lidwoord: het weer, dus ook het onweer.','Die/dat-test: het onweer dat rommelt. Dat? Dan het! ⛈️'),
+  LW('regenboog','de','Na de bui zie ik de regenboog.','Regenboog is regen + boog. Het laatste stukje bepaalt het lidwoord: de boog, dus ook de regenboog.','Die/dat-test: de regenboog die zo mooi kleurt. Die? Dan de! 🌈'),
+  LW('gesprek','het','Na het gesprek met de meester was ik blij.','Gesprek begint met ge-. Woorden met ge- aan het begin zijn vaak het-woorden: het gesprek, het geluid, het geroezemoes.','Die/dat-test: het gesprek dat we voeren. Dat? Dan het! 💬')
+]},
+{ id:7, title:'-lijk, -ig en -heid', sub:'Lange, lastige woorden', icon:'🧗', color:'#a61e4d', options:4,
+  intro:'<p>Nu de lange, lastige woorden! 🧗</p><p>Hoor je <b>/luk/</b>? Schrijf <b>-lijk</b>, net als <b>gevaarlijk</b>.<br>Hoor je <b>/ug/</b>? Schrijf <b>-ig</b>, net als <b>giftig</b>.<br>Hoor je <b>/hijt/</b>? Schrijf <b>-heid</b>, met de korte <b>ei</b> en een <b>d</b>: waarheid → waarheden.</p><p>Soms zitten ze samen in één woord: voorzicht<b>ig</b> + <b>heid</b> = voorzichtigheid! Hak het woord in stukjes.</p>',
+  boss:{name:'Bliksem Ongeduldig', color:'#748ffc', dark:'#364fc7', light:'#dbe4ff', shape:'tall', eyes:1, top:'bolt', deco:'stripes', hp:190,
+        twists:['move','shield'], shieldIcon:'⚡', twistHint:'Hij flitst heen en weer en maakt soms een bliksemschild ⚡. Wacht even als je het schild ziet!',
+        taunts:['Schiet op, schiet op! Ik ben vreselijk ongeduldig!','Zap! Ik flits al je -lijk, -ig en -heid door elkaar!'], mid:'Zzzap! Mijn bliksem wordt zwakker!', lose:'Pfff… met zoveel geduld en voorzichtigheid kan ik niet winnen!'},
+  words:[
+  W('ongelukkig','Het meisje voelt zich ongelukkig omdat haar konijn ziek is.',['ongelukkug','ongelukig','ongeluckig'],'Ongelukkig is on + geluk + k + ig. Ik hoor /ug/ en ik schrijf -ig, net als giftig. Korte u, dus een dubbele k.','On- maakt het tegenovergestelde: gelukkig → ongelukkig. Eind blijft -ig! 😢'),
+  W('onmogelijk','Een olifant op een fiets? Dat is onmogelijk!',['onmogeluk','ommogelijk','onmoogelijk'],'Onmogelijk is on + mogelijk. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Je hoort soms “om”, maar je schrijft on-.','On- maakt het tegenovergestelde: mogelijk → onmogelijk. Het eind blijft -lijk! 🐘🚲'),
+  W('uiteindelijk','Na lang zoeken vonden we uiteindelijk de sleutel.',['uiteindeluk','uiteintelijk','uitijndelijk'],'Uiteindelijk is uit + einde + lijk. Einde met de korte ei, en aan het eind -lijk, net als gevaarlijk.','Uit + einde + lijk: eerst ui, dan de korte ei, dan de lange ij! 🔑'),
+  W('belachelijk','Wat een belachelijk grote hoed!',['belacheluk','belagelijk','belachelek'],'Belachelijk komt van lachen, met ch. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk.','Om te lachen: be + lach + e + lijk! 🎩','Belachelijk = zo gek dat je erom moet lachen.'),
+  W('verdrietig','Ik was verdrietig toen mijn vriendje verhuisde.',['verdrietug','verdrietlijk','verdrieteg'],'Verdrietig komt van verdriet. Ik hoor /ug/ en ik schrijf -ig, net als giftig.','Verdriet + ig = verdrietig. Geen k aan het eind, dus -ig. 💧'),
+  W('ongeduldig','Mijn broertje wordt ongeduldig als hij moet wachten.',['ongeduldug','ongedultig','ongeduldich'],'Ongeduldig is on + geduld + ig. Ik hoor /ug/ en ik schrijf -ig, net als giftig. Geduld eindigt op een d.','Geen geduld? Dan ben je on-ge-duld-ig: vier stukjes, eind -ig! ⏰'),
+  W('zorgvuldig','Kleur de tekening zorgvuldig in.',['zorgvuldug','zorgfuldig','zorgvuldich'],'Zorgvuldig is zorg + vuldig. Ik hoor /ug/ en ik schrijf -ig, net als giftig. In het midden staat een v.','Vol zorg gedaan: zorg + vuldig! Let op de v in het midden. 🖍️','Zorgvuldig = heel precies en netjes.'),
+  W('eenvoudig','Deze puzzel is eenvoudig.',['eenvoudug','eenvoutig','eenfoudig'],'Eenvoudig is een + voudig. Ik hoor /ug/ en ik schrijf -ig, net als giftig. In het midden staat ou.','Eén keer vouwen en klaar: een + voudig, zo eenvoudig! 🧩','Eenvoudig = makkelijk, niet ingewikkeld.'),
+  W('vergeetachtig','Opa is een beetje vergeetachtig.',['vergeetachtug','vergeetagtig','vergetachtig'],'Vergeetachtig is vergeet + achtig. Ik hoor /ug/ en ik schrijf -ig, net als giftig. Vergeet met ee.','Ik vergeet het altijd: vergeet + achtig. Niet vergeten: -ig! 🧓','Vergeetachtig = snel dingen vergeten.'),
+  W('voorzichtigheid','Met voorzichtigheid steken we de straat over.',['voorzichtigheit','voorzichtugheid','voorzichtighijd'],'Voorzichtigheid is voorzichtig + heid. Eerst -ig (ik hoor /ug/, net als giftig), dan -heid: met de korte ei en een d.','Hak het in stukjes: voor-zich-tig-heid. -ig en -heid in één woord! 🚸'),
+  W('mogelijkheid','Er is maar één mogelijkheid: rennen!',['mogelijkheit','mogelukheid','mogelijkhijd'],'Mogelijkheid is mogelijk + heid. Eerst -lijk (ik hoor /luk/, net als gevaarlijk), dan -heid met ei en d: mogelijkheden.','Maak het langer: mogelijkheden. Hoor je de d? En -lijk zit er ook in! 🏃'),
+  W('eerlijkheid','Eerlijkheid duurt het langst.',['eerlijkheit','eerlukheid','eerlijkhijd'],'Eerlijkheid is eerlijk + heid. Eerst -lijk (ik hoor /luk/, net als gevaarlijk), dan -heid met de korte ei en een d.','Eerlijkheid duurt het langst, en het woord is ook lang: eer-lijk-heid! 🤝','Eerlijkheid = de waarheid zeggen en niet vals spelen.'),
+  W('dapperheid','De ridder kreeg een medaille voor zijn dapperheid.',['dapperheit','daperheid','dapperhijd'],'Dapperheid is dapper + heid. Korte a, dus een dubbele p. -heid schrijf je met de korte ei en een d.','Een dappere ridder: dapper + heid. Twee p’s als twee zwaarden! ⚔️'),
+  W('schoonheid','De prinses stond bekend om haar schoonheid.',['schoonheit','sgoonheid','schoonhijd'],'Schoonheid is schoon + heid. Schoon begint met sch. -heid schrijf je met de korte ei en een d.','Sch vooraan, -heid achteraan: schoon + heid! 👑'),
+  W('nieuwsgierigheid','Uit nieuwsgierigheid keek ik in de doos.',['nieuwsgierigheit','nieuwsgierugheid','nieuwsgirigheid'],'Nieuwsgierigheid is nieuwsgierig + heid. Eerst -ig (ik hoor /ug/, net als giftig), dan -heid met ei en d.','Het langste woord: nieuws + gierig + heid. Hak het in stukjes! 🔍')
+]},
+{ id:8, title:'Eindles: alles door elkaar', sub:'De stormkoning wacht…', icon:'🌪️', color:'#5f3dc4', options:4,
+  intro:'<p>De eindles van het Wolkeneiland! 🌪️ Alles komt door elkaar:</p><p>🥁 <b>De of het?</b> Denk aan de die/dat-test, het laatste stukje, verkleinwoord = het en meervoud = de.<br>⚠️ <b>-lijk</b>: ik hoor /luk/, net als gevaarlijk.<br>🍄 <b>-ig</b>: ik hoor /ug/, net als giftig.<br>📚 En woorden over sport en muziek.</p><p>Daarna wacht de eindbaas. Jij kunt het!</p>',
+  boss:{name:'Stormkoning Wervelwind', color:'#9775fa', dark:'#3b2a9e', light:'#e5dbff', shape:'wide', eyes:3, top:['wings','cloud','crown'], deco:'dots', hp:220, final:true,
+        twists:['shield','rage','heal'], shieldIcon:'🌪️', healSay:'Woesj! Ik zuig een wolk op en word weer sterker!', rageSay:'WOESJ! Nu ga ik pas echt stormen! Probeer me maar te raken!',
+        twistHint:'De eindbaas! Hij maakt een windhoos-schild 🌪️, wordt één keer een beetje sterker en gaat later rondstormen. Wacht als je het schild ziet. Jij kunt het!',
+        taunts:['Ik ben de koning van het Wolkeneiland! Ik blaas al je woorden weg!','De of het? -lijk of -ig? Ik maak er een storm van!'], mid:'Oei! Mijn wind gaat liggen!', lose:'Pfff… de storm is voorbij! Jij bent de held van het Wolkeneiland! ☁️'},
+  words:[
+  LW('orkest','het','Mijn tante speelt viool in het orkest.','Orkest is een het-woord: het orkest. Dat moet je onthouden.','Die/dat-test: het orkest dat speelt. Dat? Dan het! 🎻','Een grote groep mensen die samen muziek maakt.'),
+  LW('tribune','de','Opa en ik zitten op de tribune bij het voetbal.','Tribune is een de-woord: de tribune.','Die/dat-test: de tribune die vol mensen zit. Die? Dan de! 🏟️','Een grote trap met stoelen langs een sportveld, om naar de wedstrijd te kijken.'),
+  LW('team','het','Wij juichen voor het team van onze school.','Team is een Engels woord. In het Nederlands zeggen we: het team.','Die/dat-test: het team dat wint. Dat? Dan het! 🏆'),
+  LW('geluid','het','Hoor jij het geluid van de regen?','Geluid begint met ge-. Woorden met ge- aan het begin zijn vaak het-woorden: het geluid, het gesprek, het geroezemoes.','Die/dat-test: het geluid dat ik hoor. Dat? Dan het! 👂'),
+  LW('muziek','de','Zet jij de muziek wat zachter?','Muziek is een de-woord: de muziek.','Die/dat-test: de muziek die ik mooi vind. Die? Dan de! 🎶'),
+  LW('jongetje','het','Ik help het jongetje met zijn veters.','De jongen, maar het jongetje! Jongetje is een verkleinwoord, en verkleinwoorden zijn altijd het, ook bij mensen.','Klein is altijd het: de jongen → het jongetje. 👦'),
+  LW('broertjes','de','Ik speel met de broertjes van Lisa.','Eén broertje is het broertje, want dat is een verkleinwoord. Maar broertjes is meervoud, en meervoud is altijd de: de broertjes.','Meervoud wint altijd: het broertje, maar de broertjes! 👦👦'),
+  W('begrijpelijk','Dat je boos bent, is heel begrijpelijk.',['begrijpeluk','begreipelijk','begrijpelig'],'Begrijpelijk komt van begrijpen, met de lange ij. Ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk.','Be-grij-pe-lijk: twee keer de lange ij, en eind -lijk! 💡','Begrijpelijk = je snapt het goed, het is logisch.'),
+  W('gruwelijk','In het spookhuis klonk een gruwelijk gegil.',['gruweluk','gruwelig','gruuwelijk'],'Gruwelijk: ik hoor /luk/ en ik schrijf -lijk, net als gevaarlijk. Gru-we-lijk: één u.','Een k aan het eind? -lijk! Net zo eng als gevaarlijk. 👻','Gruwelijk = heel erg eng of akelig.'),
+  W('dertig','Mijn juf is dertig jaar.',['dertug','derrtig','dertich'],'Dertig: ik hoor /dertug/ en ik schrijf -ig, net als giftig. Net als twintig en veertig.','Twintig, dertig, veertig: alle tientallen eindigen op -ig! 🎂'),
+  W('zenuwachtig','Voor de toets ben ik een beetje zenuwachtig.',['zenuwachtug','zenuwagtig','zenuachtig'],'Zenuwachtig is zenuw + achtig. Ik hoor /ug/ en ik schrijf -ig, net als giftig. Zenuw eindigt op uw.','Zenuw + achtig: eerst uw, dan cht, dan -ig! 😬'),
+  W('rommelig','Het is rommelig in mijn tas.',['rommelug','romelig','rommellijk'],'Rommelig komt van rommel. Ik hoor /ug/ en ik schrijf -ig, net als giftig. Korte o, dus een dubbele m.','Rommel + ig = rommelig. Twee m’s in de rommel! 🎒'),
+  W('toeschouwer','Elke toeschouwer krijgt een vlaggetje.',['toeschauwer','toesgouwer','toeschouwwer'],'Toeschouwer is toe + schouwer. Met sch en ouw.','Een toeschouwer kijkt toe: toe + sch + ouw + er! 👀','Iemand die komt kijken naar een wedstrijd of een voorstelling.'),
+  W('aanvoerder','De aanvoerder draagt een band om zijn arm.',['aanvoerdur','aanfoerder','anvoerder'],'Aanvoerder is aan + voer + der. Aan met aa, voer met een v.','De aanvoerder voert het team aan: aan + voer + der! ⚽','De baas van het team op het veld.'),
+  W('traagheid','De slak staat bekend om zijn traagheid.',['traagheit','tragheid','traaghijd'],'Traagheid is traag + heid. Traag met aa en een g. -heid schrijf je met de korte ei en een d.','Traag + heid: lekker langzaam, net als een slak! 🐌')
+]}
 ]}
 ];
-WORLDS.forEach(Wd=>Wd.levels.forEach((L,i)=>{L.id=i+1;L.world=Wd.id;}));
+WORLDS.forEach(Wd=>Wd.levels.forEach((L,i)=>{L.id=i+1;L.world=Wd.id;if(L.type==='lidwoord')L.words.forEach(w=>{if(!w.t){w.t='lidwoord';}});}));
 const ALL_LEVELS=[].concat(...WORLDS.map(Wd=>Wd.levels));
 const CUSTOM_BOSS={name:'Eigenwijze Eppo', color:'#20c997', dark:'#0f7d5c', light:'#d3f9ec', shape:'round', eyes:1, top:'antenna',
   taunts:['Deze woorden zijn speciaal voor jou uitgekozen. Hihi!','Eigen woorden? Die ken jij toch niet!'], mid:'Hé! Jij oefent goed!', lose:'Wauw, jij kent al je eigen woorden!'};
@@ -1002,7 +1208,11 @@ function bossSVG(b,friendly){
   if(has('antenna')){back+=`<line x1="100" y1="${T+4}" x2="100" y2="${T-26}" stroke="${d}" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="${T-32}" r="10" fill="#ff5a4f" stroke="${d}" stroke-width="4"/>`;}
   if(has('antennae')){[[84,64],[116,136]].forEach(p=>{back+=`<path d="M${p[0]} ${T+6} Q${(p[0]+p[1])/2} ${T-12} ${p[1]} ${T-26}" fill="none" stroke="${d}" stroke-width="5" stroke-linecap="round"/><circle cx="${p[1]}" cy="${T-30}" r="9" fill="#ffd23f" stroke="${d}" stroke-width="4"/>`;});}
   if(has('sprout')){back+=`<path d="M100 ${T+6} L100 ${T-20}" stroke="#2f9e44" stroke-width="5" stroke-linecap="round"/><path d="M100 ${T-16} Q84 ${T-38} 70 ${T-26} Q86 ${T-12} 100 ${T-16}Z" fill="#51cf66" stroke="#2f9e44" stroke-width="3"/><path d="M100 ${T-20} Q118 ${T-44} 132 ${T-30} Q116 ${T-14} 100 ${T-20}Z" fill="#51cf66" stroke="#2f9e44" stroke-width="3"/>`;}
+  if(has('cloud')){back+=`<g fill="#fff" stroke="#c5d0de" stroke-width="4"><circle cx="62" cy="${T+2}" r="22"/><circle cx="138" cy="${T+2}" r="22"/><circle cx="84" cy="${T-16}" r="24"/><circle cx="116" cy="${T-16}" r="24"/><circle cx="100" cy="${T-30}" r="22"/></g><g fill="#fff"><circle cx="62" cy="${T+6}" r="18"/><circle cx="138" cy="${T+6}" r="18"/><circle cx="84" cy="${T-12}" r="20"/><circle cx="116" cy="${T-12}" r="20"/><circle cx="100" cy="${T-24}" r="18"/><rect x="62" y="${T-14}" width="76" height="30"/></g>`;}
   if(has('crown')){front+=`<path d="M62 ${T+10} L62 ${T-24} L80 ${T-8} L100 ${T-32} L120 ${T-8} L138 ${T-24} L138 ${T+10}Z" fill="#ffcc00" stroke="#a87b00" stroke-width="4" stroke-linejoin="round"/><circle cx="100" cy="${T-4}" r="6" fill="#ff4d6d"/><circle cx="76" cy="${T}" r="4.5" fill="#4dabf7"/><circle cx="124" cy="${T}" r="4.5" fill="#4dabf7"/>`;}
+  if(has('bolt')){front+=`<path d="M108 ${T+8} L86 ${T-22} L100 ${T-24} L90 ${T-56} L118 ${T-18} L104 ${T-16} Z" fill="#ffd43b" stroke="#e67700" stroke-width="4" stroke-linejoin="round"/>`;}
+  if(has('headphones')){front+=`<path d="M30 ${T+58} Q30 ${T-26} 100 ${T-28} Q170 ${T-26} 170 ${T+58}" fill="none" stroke="#343a40" stroke-width="9" stroke-linecap="round"/><rect x="12" y="${T+40}" width="30" height="46" rx="12" fill="#e03131" stroke="#343a40" stroke-width="4"/><rect x="158" y="${T+40}" width="30" height="46" rx="12" fill="#e03131" stroke="#343a40" stroke-width="4"/>`;}
+  if(has('cap')){front+=`<path d="M46 ${T+22} Q46 ${T-24} 100 ${T-26} Q154 ${T-24} 154 ${T+22}Z" fill="#fa5252" stroke="#a51111" stroke-width="4" stroke-linejoin="round"/><path d="M100 ${T+22} Q150 ${T+10} 186 ${T+26} Q160 ${T+38} 100 ${T+30}Z" fill="#e03131" stroke="#a51111" stroke-width="4" stroke-linejoin="round"/><circle cx="100" cy="${T-24}" r="6" fill="#fff" stroke="#a51111" stroke-width="3"/><text x="100" y="${T+12}" font-size="22" font-weight="700" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif">1</text>`;}
   if(has('hat')){front+=`<rect x="58" y="${T-6}" width="84" height="12" rx="6" fill="#1f2a44"/><rect x="72" y="${T-46}" width="56" height="44" rx="6" fill="#1f2a44"/><rect x="72" y="${T-16}" width="56" height="9" fill="#ff5a4f"/>`;}
   if(has('helmet')){front+=`<path d="M100 ${T-22} L100 ${T-38}" stroke="#495057" stroke-width="6" stroke-linecap="round"/><circle cx="100" cy="${T-40}" r="7" fill="#ffd23f" stroke="#495057" stroke-width="3"/><path d="M44 ${T+22} Q44 ${T-22} 100 ${T-24} Q156 ${T-22} 156 ${T+22}Z" fill="#adb5bd" stroke="#495057" stroke-width="4" stroke-linejoin="round"/><rect x="38" y="${T+14}" width="124" height="14" rx="7" fill="#868e96" stroke="#495057" stroke-width="4"/>`+
     [60,80,100,120,140].map(x=>`<circle cx="${x}" cy="${T+21}" r="3.2" fill="#495057"/>`).join('');}
@@ -1102,7 +1312,7 @@ function renderMap(){
     if(worldUnlocked(Wd)){
       const fresh=state.revealed.indexOf(Wd.id)<0, done=worldDone(Wd), here=Wd.id===hereId&&!done;
       if(fresh) reveal.push(Wd.id);
-      h+=`<button class="island ${side}${here?' here':''}" data-world="${Wd.id}" style="--land:${Wd.land};--sand:${Wd.sand||'#f6dc9b'}" aria-label="Wereld ${Wd.id}: ${esc(Wd.name)}, ${st} van de ${mx} sterren">
+      h+=`<button class="island ${side}${here?' here':''}${Wd.float?' floaty':''}" data-world="${Wd.id}" style="--land:${Wd.land};--sand:${Wd.sand||'#f6dc9b'}" aria-label="Wereld ${Wd.id}: ${esc(Wd.name)}, ${st} van de ${mx} sterren">
         ${here?'<span class="pin">📍 Jij bent hier</span>':''}
         <span class="scenery" aria-hidden="true">${Wd.scenery}</span>
         <span class="iname">${Wd.icon} Wereld ${Wd.id} · ${esc(Wd.name)}</span>
@@ -1184,8 +1394,22 @@ function openIntro(L){
 $('#btn-begin').addEventListener('click',()=>{SFX.click();startLevel(G.lvl);});
 
 /* ---------- Quiz ---------- */
+/* De/het-vragen: het juiste antwoord is het lidwoord (item.a), niet het woord zelf. */
+const isLid=item=>!!item&&item.t==='lidwoord';
+const answerOf=item=>isLid(item)?item.a:item.w;
+const fullAnswer=item=>isLid(item)?item.a+' '+item.w:item.w;
+function pickWords(L){
+  const n=Math.min(8,L.words.length), lid=L.words.filter(isLid), sp=L.words.filter(w=>!isLid(w));
+  if(!lid.length||!sp.length) return shuffle(L.words).slice(0,n);
+  const a=Math.min(lid.length,Math.round(n/2)); /* gemengd level: ongeveer half de/het, half spelling */
+  return shuffle(shuffle(lid).slice(0,a).concat(shuffle(sp).slice(0,n-a)));
+}
+function lidSentence(item){
+  const re=wordRegex(esc(item.a+' '+item.w));
+  return esc(item.s).replace(re,(m,pre)=>pre+'<span class="blank" role="img" aria-label="lege plek"></span> <span class="noun">'+esc(item.w)+'</span>');
+}
 function startLevel(L){
-  const picked=shuffle(L.words).slice(0,Math.min(8,L.words.length)).map((w,i)=>Object.assign({},w,{_id:i}));
+  const picked=pickWords(L).map((w,i)=>Object.assign({},w,{_id:i}));
   G={lvl:L,queue:picked,total:picked.length,done:0,firstTry:{},requeues:{},correctFirst:0,current:null,answered:false};
   $('#quiz-title').textContent=levelLabel(L)+(L.id==='custom'?' ':' · ')+L.title;
   show('quiz'); nextQuestion();
@@ -1201,9 +1425,11 @@ function nextQuestion(){
   const item=G.queue.shift(); G.current=item; G.answered=false;
   const remaining=G.queue.length+1; const pct=G.done/(G.done+remaining)*100;
   $('#pbar').style.width=pct+'%'; $('#pcount').textContent=`${G.done+1}/${G.done+remaining}`;
-  $('#sentence').innerHTML='📝 '+blankSentence(item.s,item.w);
-  const opts=makeOptions(item,G.lvl.options||4);
-  const box=$('#options'); box.className='options'+(opts.length===3?' three':'');
+  const lid=isLid(item);
+  $('#listen-q').textContent=lid?'Luister goed! Zeg je de of het?':'Luister goed! Welk woord hoor je?';
+  $('#sentence').innerHTML='📝 '+(lid?lidSentence(item):blankSentence(item.s,item.w));
+  const opts=lid?['de','het']:makeOptions(item,G.lvl.options||4);
+  const box=$('#options'); box.className='options'+(lid?' lid':opts.length===3?' three':'');
   box.innerHTML=opts.map((o,i)=>`<button class="opt" data-val="${esc(o)}" aria-label="Keuze ${i+1}: ${esc(o)}">${esc(o)}</button>`).join('');
   updateVoiceNotes();
   sayCurrent(false);
@@ -1212,17 +1438,19 @@ function sayCurrent(slow){
   if(!G||!G.current) return; const btn=slow?$('#btn-slow'):$('#btn-say');
   $$('.speak').forEach(b=>b.classList.remove('talking')); btn.classList.add('talking');
   const r=(state.rate||0.85)*(slow?0.65:1);
-  Speech.speak([G.current.w, G.current.s],r,()=>btn.classList.remove('talking'));
+  /* Bij de/het alleen het woord zeggen: de zin zou het antwoord verklappen. */
+  const parts=isLid(G.current)?(slow?[G.current.w]:[G.current.w,'De of het?']):[G.current.w, G.current.s];
+  Speech.speak(parts,r,()=>btn.classList.remove('talking'));
   clearTimeout(sayCurrent._t); sayCurrent._t=setTimeout(()=>btn.classList.remove('talking'),slow?9000:6000);
 }
 $('#btn-say').addEventListener('click',()=>sayCurrent(false));
 $('#btn-slow').addEventListener('click',()=>sayCurrent(true));
 $('#options').addEventListener('click',e=>{const b=e.target.closest('.opt');if(b&&G&&!G.answered)answer(b.dataset.val);});
 function answer(val){
-  const item=G.current; G.answered=true; const ok=val===item.w;
+  const item=G.current; G.answered=true; const right=answerOf(item); const ok=val===right;
   if(!(item._id in G.firstTry)){G.firstTry[item._id]=ok; if(ok)G.correctFirst++;}
   $$('#options .opt').forEach(b=>{b.disabled=true;const v=b.dataset.val;
-    if(v===item.w){b.classList.add('correct');b.textContent='✓ '+v;} else if(v===val)b.classList.add('wrong'); else b.classList.add('dim');});
+    if(v===right){b.classList.add('correct');b.textContent='✓ '+v;} else if(v===val)b.classList.add('wrong'); else b.classList.add('dim');});
   let back=false;
   if(ok){SFX.correct();} else {SFX.wrong();
     G.requeues[item._id]=(G.requeues[item._id]||0)+1;
@@ -1232,14 +1460,16 @@ function answer(val){
   const fb=$('#feedback'); fb.classList.toggle('bad',!ok);
   $('#fb-emo').textContent=ok?pick(['🎉','🥳','⭐','🌟','💪','🏆']):pick(['💛','🙂','🤗']);
   $('#fb-msg').textContent=ok?pick(['Super goed!','Helemaal goed!','Knap gedaan!','Yes! Goed zo!','Wauw, top!']):pick(['Bijna!','Net niet!','Oeps, bijna goed!']);
-  $('#fb-word').textContent=item.w;
-  $('#fb-sentence').innerHTML=markSentence(item.s,item.w);
+  $('#fb-label').textContent=isLid(item)?'Je zegt:':'Het woord is:';
+  $('#fb-word').textContent=fullAnswer(item);
+  $('#fb-sentence').innerHTML=markSentence(item.s,fullAnswer(item));
+  $('#fb-mean').hidden=!item.b; $('#fb-meaning').textContent=item.b||'';
   $('#fb-why').textContent=item.u; $('#fb-ezel').textContent=item.e;
   $('#fb-again').hidden=!back;
   $('#btn-nextq').textContent=G.queue.length?'Volgende ➜':'Naar de baas! ⚔️';
-  setTimeout(()=>{if(!G.answered||G.current!==item)return;fb.classList.add('show');fb.querySelector('.fb-inner').scrollTop=0;try{$('#btn-nextq').focus({preventScroll:true});}catch(e){}},ok?450:650);
+  setTimeout(()=>{if(!G.answered||G.current!==item)return;fb.classList.add('show');if(isLid(item))Speech.speak([fullAnswer(item)],state.rate);fb.querySelector('.fb-inner').scrollTop=0;try{$('#btn-nextq').focus({preventScroll:true});}catch(e){}},ok?450:650);
 }
-$('#fb-say').addEventListener('click',()=>{if(G&&G.current)Speech.speak([G.current.w,G.current.s],state.rate);});
+$('#fb-say').addEventListener('click',()=>{if(G&&G.current)Speech.speak([fullAnswer(G.current),G.current.s],state.rate);});
 $('#btn-nextq').addEventListener('click',()=>{SFX.click();nextQuestion();});
 $('#btn-quit').addEventListener('click',()=>{SFX.click();
   modal('Wil je stoppen met dit level? 🤔<br><small>Je begint dan de volgende keer opnieuw.</small>',[
@@ -1261,7 +1491,8 @@ function bossIntro(){
   $('#bi-title').textContent=b.final?'🔥 '+b.name+' 🔥':'Pas op! '+b.name+' komt eraan!';
   $('#bi-taunt').textContent=pick(b.taunts);
   $('#bi-boss').innerHTML=bossSVG(b);
-  $('#bi-score').innerHTML=`Je had <b>${G.correctFirst} van de ${G.total}</b> woorden in één keer goed!`;
+  $('#scr-bossintro').dataset.world=L.world||'';
+  $('#bi-score').innerHTML=`Je had <b>${G.correctFirst} van de ${G.total}</b> ${L.type==='lidwoord'?'vragen':'woorden'} in één keer goed!`;
   $('#bi-power').innerHTML=`Jouw kracht: ${starsHTML(G.stars)}<br><small>${G.dmgBase} schade per tik</small>`+
     ((b.hp||100)>100?`<br><small>Deze baas is extra sterk: ❤️ ${b.hp}</small>`:'')+
     (b.twistHint?`<div class="twist-hint">💡 ${esc(b.twistHint)}</div>`:'');
@@ -1275,15 +1506,15 @@ function stopBossTimers(){if(!G)return;clearInterval(G.moveT);clearTimeout(G.gua
 function startFight(){
   const b=G.lvl.boss; stopBossTimers();
   G.maxHp=b.hp||100; G.hp=G.maxHp; G.fighting=true; G.saidMid=false; G.taps=0;
-  G.guard=null; G.split=false; G.raged=false; G.bx=0; G.by=0; G.bs=1;
+  G.guard=null; G.split=false; G.raged=false; G.healed=false; G.bx=0; G.by=0; G.bs=1;
   const guards=hasTwist('shield')?(b.final?[0.75,0.4]:[0.66,0.33]):hasTwist('ghost')?[0.6,0.3]:[];
   G.guards=guards.map(at=>({at,type:hasTwist('shield')?'shield':'ghost',done:false}));
   if(hasTwist('shield')&&hasTwist('ghost')) G.guards=[{at:0.66,type:'shield',done:false},{at:0.33,type:'ghost',done:false}];
   $('#boss-label').textContent='👾 '+b.name; $('#boss-svg').innerHTML=bossSVG(b);
   $('#boss-shield').textContent=b.shieldIcon||'🛡️';
-  const btn=$('#bossbtn'); btn.classList.remove('defeated','hit','shielded','ghosted');
+  const btn=$('#bossbtn'); btn.classList.remove('defeated','hit','shielded','ghosted','healing');
   btn.classList.toggle('mover',hasTwist('move')||hasTwist('rage')); btn.style.transform='';
-  $('#arena').classList.toggle('final',!!b.final); $('#arena').classList.remove('rage');
+  $('#arena').classList.toggle('final',!!b.final); $('#arena').classList.remove('rage'); $('#arena').dataset.world=G.lvl.world||'';
   updateHP();
   $('#boss-power-hint').innerHTML=`Jouw kracht: ${starsHTML(G.stars)}`;
   $('#tap-hint').textContent='👆 Tik zo snel als je kunt op de baas!';
@@ -1340,6 +1571,12 @@ function hitBoss(x,y){
     $('#boss-svg').innerHTML=`<div class="twins">${bossSVG(b)}${bossSVG(b)}</div>`;bossSay(b.mid,2000);SFX.roar();}
   if(hasTwist('rage')&&!G.raged&&frac<=0.5){G.raged=true;G.saidMid=true;
     $('#arena').classList.add('rage');bossSay(b.rageSay||b.mid,2200);SFX.roar();startMoving();}
+  /* Opladen (wereld 3+): precies één keer, een klein beetje. De baas blijft altijd te verslaan. */
+  if(hasTwist('heal')&&!G.healed&&frac<=0.22&&G.guards.every(q=>q.done||frac>q.at)){G.healed=true;G.saidMid=true;
+    const plus=Math.round(G.maxHp*0.15); G.hp=Math.min(G.maxHp,G.hp+plus); updateHP();
+    floatText('heal','+'+plus+' ❤️',r.width/2,Math.max(40,py-30)); bossSay(b.healSay||'Hihi, even opladen!',1900);
+    [523,659,784].forEach((f,i)=>SFX.tone(f,.16,'sine',.12,i*.07));
+    btn.classList.add('healing'); setTimeout(()=>btn.classList.remove('healing'),900); return;}
   const g=G.guards.find(q=>!q.done&&frac<=q.at);
   if(g){G.guards.forEach(q=>{if(frac<=q.at)q.done=true;});startGuard(g.type);return;}
   if(!G.saidMid&&frac<=0.5){G.saidMid=true;bossSay(b.mid);}
@@ -1348,7 +1585,7 @@ $('#bossbtn').addEventListener('pointerdown',e=>{e.preventDefault();hitBoss(e.cl
 $('#bossbtn').addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();const r=$('#bossbtn').getBoundingClientRect();hitBoss(r.left+r.width*(0.3+Math.random()*0.4),r.top+r.height*(0.3+Math.random()*0.4));}});
 function defeatBoss(){
   G.fighting=false; stopBossTimers(); G.guard=null;
-  const b=G.lvl.boss, btn=$('#bossbtn'); btn.classList.remove('shielded','ghosted');
+  const b=G.lvl.boss, btn=$('#bossbtn'); btn.classList.remove('shielded','ghosted','healing');
   bossSay(b.lose,2600); $('#tap-hint').textContent='🎉 Je hebt gewonnen!';
   setTimeout(()=>{btn.classList.add('defeated');SFX.roar();},500);
   setTimeout(winScreen,b.final?2400:1900);
@@ -1368,7 +1605,7 @@ function winScreen(){
   }
   saveState();
   $('#win-stars').innerHTML=[0,1,2].map(i=>`<span class="${i<G.stars?'star-on':'star-off'}">★</span>`).join('');
-  $('#win-text').innerHTML=`Je hebt <b>${esc(L.boss.name)}</b> verslagen! 🎉<br>${G.correctFirst} van de ${G.total} woorden in één keer goed.`+
+  $('#win-text').innerHTML=`Je hebt <b>${esc(L.boss.name)}</b> verslagen! 🎉<br>${G.correctFirst} van de ${G.total} ${L.type==='lidwoord'?'vragen':'woorden'} in één keer goed.`+
     (G.stars<3?'<br><small>Speel nog een keer voor meer sterren!</small>':'<br><small>Alle sterren! Jij bent een echte spellingheld!</small>');
   const un=$('#win-unlock'); un.hidden=!msg; if(msg) un.textContent=msg;
   G.next=next;
@@ -1470,7 +1707,7 @@ $('#btn-clearwords').addEventListener('click',()=>modal('Alle eigen woorden wiss
 /* ========================= START ========================= */
 updateSfxButtons(); Speech.init();
 // Klein hulpje voor testen (niet zichtbaar in het spel)
-window.__spellingheld={worlds:WORLDS,levels:ALL_LEVELS,get state(){return state;},get game(){return G;},answer(){return G&&G.current?G.current.w:null;},genWrong:genWrong,
+window.__spellingheld={worlds:WORLDS,levels:ALL_LEVELS,get state(){return state;},get game(){return G;},answer(){return G&&G.current?answerOf(G.current):null;},current(){return G&&G.current?Object.assign({},G.current):null;},genWrong:genWrong,
   fight(worldId,levelId,correct){const L=worldById(worldId).levels[levelId-1];G={lvl:L,total:8,correctFirst:correct==null?8:correct};bossIntro();}};
 </script>
 </body>
