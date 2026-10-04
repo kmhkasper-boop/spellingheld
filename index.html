@@ -194,12 +194,79 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .modal .card{max-width:480px;text-align:center;font-size:1.1em}
 .toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:.6em 1.1em;border-radius:999px;z-index:70;font-weight:600;display:none;max-width:92vw;text-align:center}
 .toast.show{display:block}
+.reset-home{font-size:.75em;min-height:46px;padding:.3em 1em;background:rgba(255,255,255,.75);color:var(--ink2);box-shadow:0 4px 0 rgba(31,42,68,.14)}
+.check{display:flex;align-items:center;gap:12px;margin:14px auto 4px;max-width:380px;font-size:.9em;font-weight:600;background:#f4f7fc;border-radius:16px;padding:.55em .9em;cursor:pointer;text-align:left}
+.check input{width:30px;height:30px;min-width:30px;margin:0;accent-color:var(--green);cursor:pointer}
+/* ---------- Wereldkaart ---------- */
+.sea{position:relative;border-radius:var(--radius);padding:30px 10px 34px;margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow);
+  background:radial-gradient(ellipse 16px 5px at 50% 100%,rgba(255,255,255,.55) 45%,transparent 52%) 0 0/64px 46px,
+             radial-gradient(ellipse 16px 5px at 50% 100%,rgba(255,255,255,.4) 45%,transparent 52%) 32px 23px/64px 46px,
+             linear-gradient(180deg,#72d3ff 0%,#3aa9ec 55%,#2a8fd6 100%)}
+.islands{position:relative;display:flex;flex-direction:column;align-items:center}
+.island{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;width:min(86%,420px);min-height:178px;padding:24px 18px 22px;
+  border-radius:48% 52% 46% 54% / 56% 48% 52% 44%;background:radial-gradient(ellipse at 50% 45%,var(--land,#7ed957) 0 60%,var(--sand,#f6dc9b) 62% 100%);
+  box-shadow:0 0 0 8px rgba(255,255,255,.45),0 0 0 17px rgba(255,255,255,.16),0 12px 0 8px rgba(20,60,110,.22);color:var(--ink);font-size:1em;text-align:center;transition:transform .15s}
+.island:hover{transform:scale(1.03)}
+.island.left{align-self:flex-start;margin-left:5%} .island.right{align-self:flex-end;margin-right:5%}
+.island .scenery{font-size:46px;line-height:1;letter-spacing:4px}
+.island .iname{background:#fff;border-radius:999px;padding:.2em .85em;font-weight:700;box-shadow:0 3px 0 rgba(31,42,68,.18)}
+.island .iprog{font-size:.82em;font-weight:600;background:rgba(255,255,255,.8);border-radius:999px;padding:.1em .75em}
+.island.here{animation:islandglow 1.8s ease-in-out infinite}
+@keyframes islandglow{0%,100%{box-shadow:0 0 0 8px rgba(255,255,255,.45),0 0 0 17px rgba(255,255,255,.16),0 12px 0 8px rgba(20,60,110,.22)}50%{box-shadow:0 0 0 8px rgba(255,210,63,.9),0 0 0 20px rgba(255,210,63,.35),0 12px 0 8px rgba(20,60,110,.22)}}
+.pin{position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:#ff9f1c;color:#fff;font-weight:700;font-size:.72em;border-radius:999px;padding:.15em .75em;white-space:nowrap;box-shadow:0 3px 0 rgba(0,0,0,.2);z-index:4}
+.route{width:0;height:40px;border-left:6px dashed rgba(255,255,255,.85);margin:16px 0}
+.route.foggy{border-left-color:rgba(255,255,255,.35)}
+.island.locked,.island.teaser{--land:#aebccb;--sand:#dde4ea}
+.island.teaser{min-height:136px;width:min(66%,300px)}
+.island.mini{min-height:118px;width:min(64%,280px);margin-top:30px;--land:#63d4a6;--sand:#f6dc9b}
+.island.mini .scenery{font-size:34px}
+.island.wiggle{animation:wiggle .4s}
+.fog{position:absolute;inset:-20px;border-radius:44%;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 50%,rgba(255,255,255,.9) 0 42%,rgba(236,243,250,.82) 68%,rgba(255,255,255,.35) 100%);
+  -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}
+.fog i{position:absolute;left:var(--x);top:var(--y);width:var(--s);height:calc(var(--s) * .6);background:#fff;border-radius:50%;filter:blur(6px);opacity:.95;
+  animation:fogdrift 5s ease-in-out infinite alternate;animation-delay:var(--d)}
+@keyframes fogdrift{from{transform:translateX(-12px)}to{transform:translateX(14px)}}
+.fog .fog-q{position:relative;font-size:54px;line-height:1;font-weight:700;color:#7b8798;animation:bob 2.4s ease-in-out infinite}
+.fog .fog-t{position:relative;font-weight:700;color:#3b4767;font-size:.95em;padding:0 14px}
+.fog .fog-s{position:relative;font-size:.72em;font-weight:500;color:#3b4767;padding:0 22px;max-width:300px}
+.fog.clearing{animation:fogclear 2.4s ease-in forwards;pointer-events:none}
+.fog.clearing i{animation:fogaway 2.4s ease-in forwards}
+.fog.clearing .fog-q,.fog.clearing .fog-t,.fog.clearing .fog-s{animation:fadeout .6s forwards}
+@keyframes fogclear{0%{opacity:1}55%{opacity:.75}100%{opacity:0;-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}}
+@keyframes fogaway{to{transform:translate(var(--fx),var(--fy)) scale(1.9);opacity:0}}
+@keyframes fadeout{to{opacity:0;transform:scale(.6)}}
+.island .spark{z-index:5}
+/* ---------- Extra baas-trucjes (wereld 2) ---------- */
+.bossbtn{transition:transform .55s cubic-bezier(.35,1.35,.5,1)}
+.bossbtn.mover{width:min(62vw,300px)}
+.bossbtn .shield{position:absolute;inset:-4% -10% 2%;border-radius:50%;display:none;align-items:flex-start;justify-content:center;padding-top:2%;font-size:clamp(40px,9vw,64px);z-index:3;pointer-events:none;
+  background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.85),rgba(140,205,255,.5) 45%,rgba(40,120,220,.35) 72%);border:6px solid rgba(255,255,255,.95);
+  box-shadow:0 0 30px rgba(80,170,255,.85);animation:shieldpulse .7s ease-in-out infinite alternate}
+.bossbtn.shielded .shield{display:flex}
+@keyframes shieldpulse{from{transform:scale(.97)}to{transform:scale(1.03)}}
+.bossbtn .inner{transition:opacity .3s}
+.bossbtn.ghosted .inner{opacity:.15}
+.twins{display:flex;align-items:flex-end;justify-content:center;width:100%;height:100%;gap:2%}
+.twins svg{width:49%;height:auto}
+.twins svg:last-child{animation:bob 1.5s .5s ease-in-out infinite}
+.tink{position:absolute;pointer-events:none;font-weight:700;font-size:1.6em;color:#fff;-webkit-text-stroke:2px #1d5fd1;paint-order:stroke fill;animation:dmg .8s ease-out forwards;z-index:5;white-space:nowrap}
+.twist-hint{margin-top:8px;font-size:.85em;background:#e8f1ff;border-radius:14px;padding:.4em .7em}
+.arena.final{background:radial-gradient(ellipse at 50% 115%,#ff9b54 0,#ffc58a 35%,rgba(255,216,168,.6) 60%,transparent 80%)}
+.arena.rage{animation:rage .9s ease-in-out infinite alternate}
+@keyframes rage{from{box-shadow:inset 0 0 0 0 rgba(255,70,30,0)}to{box-shadow:inset 0 0 70px 14px rgba(255,70,30,.5)}}
+#scr-bossintro.final .boss-name{color:#fff;-webkit-text-stroke:2px #a12a00;paint-order:stroke fill;text-shadow:0 4px 0 #a12a00;font-size:1.9em}
+#scr-bossintro.final .boss-preview{filter:drop-shadow(0 0 22px rgba(255,110,40,.85))}
+.final-badge{display:none;background:#a12a00;color:#fff;font-weight:700;border-radius:999px;padding:.25em 1em;letter-spacing:1px;animation:pop 1.2s infinite}
+#scr-bossintro.final .final-badge{display:inline-block}
 @media (max-width:520px){
   .speak{width:100px;height:100px;font-size:50px}
   .speak.slow{width:76px;height:76px;font-size:36px}
   .options.three{grid-template-columns:1fr}
   .options.three .opt{min-height:70px}
   .node .num{width:60px;height:60px;min-width:60px;font-size:30px}
+  .island{width:min(90%,420px)} .island.left{margin-left:2%} .island.right{margin-right:2%}
+  .island .scenery{font-size:40px}
   .btn.big{font-size:1.35em}
   .card{padding:14px 14px}
 }
@@ -222,23 +289,34 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     <h1 class="logo">Spellingheld</h1>
     <p class="tagline">Luister goed, kies het goede woord en versla de spellingmonsters! 💪</p>
     <button id="btn-start" class="btn big green">▶&nbsp; Start</button>
+    <button id="btn-reset-home" class="btn small white reset-home" type="button">🔄 Opnieuw beginnen</button>
     <p class="voice-note" id="voice-note-start" hidden></p>
     <button id="btn-parent" class="btn small parent-gate" aria-label="Voor ouders: houd 2 seconden ingedrukt"><span class="fill"></span><span>👪 Voor ouders <small>(houd 2 sec. vast)</small></span></button>
   </section>
 
-  <section id="scr-map" class="screen" aria-label="Kies een level">
+  <section id="scr-map" class="screen" aria-label="Wereldkaart">
     <div class="topbar">
       <button class="iconbtn" data-go="start" aria-label="Terug naar start">🏠</button>
-      <div class="title">🗺️ Kies een level</div>
+      <div class="title">🗺️ Wereldkaart</div>
       <button class="iconbtn sfx-toggle" aria-label="Geluidjes aan of uit">🔔</button>
     </div>
-    <div class="map-head"><span class="hint">Versla elke baas om het volgende level te openen!</span><span class="starcount" id="starcount">⭐ 0</span></div>
+    <div class="map-head"><span class="hint">Kies een eiland! Speel een wereld uit om de mist weg te blazen.</span><span class="starcount" id="starcount">⭐ 0</span></div>
+    <div class="sea" id="sea"></div>
+  </section>
+
+  <section id="scr-levels" class="screen" aria-label="Kies een level">
+    <div class="topbar">
+      <button class="iconbtn" data-go="map" aria-label="Terug naar de wereldkaart">🗺️</button>
+      <div class="title" id="levels-title">Kies een level</div>
+      <button class="iconbtn sfx-toggle" aria-label="Geluidjes aan of uit">🔔</button>
+    </div>
+    <div class="map-head"><span class="hint">Versla elke baas om het volgende level te openen!</span><span class="starcount" id="wstarcount">⭐ 0</span></div>
     <div class="path" id="path"></div>
   </section>
 
   <section id="scr-intro" class="screen" aria-label="Uitleg van het level">
     <div class="topbar" style="width:100%">
-      <button class="iconbtn" data-go="map" aria-label="Terug naar de kaart">🗺️</button>
+      <button class="iconbtn" id="btn-intro-back" aria-label="Terug naar de kaart">🗺️</button>
       <div class="title" id="intro-title">Level</div>
       <button class="iconbtn sfx-toggle" aria-label="Geluidjes aan of uit">🔔</button>
     </div>
@@ -267,6 +345,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
   </section>
 
   <section id="scr-bossintro" class="screen" aria-label="De baas komt eraan">
+    <span class="final-badge">⚠️ EINDBAAS ⚠️</span>
     <h2 class="boss-name" id="bi-title">Pas op!</h2>
     <div class="bubble" id="bi-taunt"></div>
     <div class="boss-preview" id="bi-boss"></div>
@@ -279,7 +358,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
       <div class="hpwrap"><div class="hplabel"><span id="boss-label">Baas</span><span id="hp-num">100</span></div><div class="hpbar"><div id="hpfill"></div></div></div>
       <div class="boss-stage">
         <div class="bubble boss-bubble" id="boss-bubble"></div>
-        <button class="bossbtn" id="bossbtn" aria-label="Tik op de baas!"><div class="bob"><div class="inner" id="boss-svg"></div></div></button>
+        <button class="bossbtn" id="bossbtn" aria-label="Tik op de baas!"><div class="bob"><div class="inner" id="boss-svg"></div></div><span class="shield" id="boss-shield" aria-hidden="true">🛡️</span></button>
       </div>
       <div class="tap-hint" id="tap-hint">👆 Tik zo snel als je kunt op de baas!</div>
       <div class="hint" id="boss-power-hint"></div>
@@ -294,7 +373,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     <div class="btnrow">
       <button class="btn big green" id="btn-next">Volgende level ➜</button>
       <button class="btn white" id="btn-again">🔁 Nog een keer</button>
-      <button class="btn white" data-go="map">🗺️ Kaart</button>
+      <button class="btn white" id="btn-win-map">🗺️ Kaart</button>
     </div>
   </section>
 
@@ -306,7 +385,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     </div>
     <div class="card section">
       <h2>✏️ Eigen woorden toevoegen</h2>
-      <p class="small-note">Voeg bijvoorbeeld de woorden van het dictee van school toe. Ze komen samen in het level <b>“Eigen woorden”</b> op de kaart (vanaf 3 woorden). Foute opties mag u leeg laten: die maakt het spel dan zelf (ei↔ij, au↔ou, d↔t, g↔ch, dubbele medeklinkers, enz.).</p>
+      <p class="small-note">Voeg bijvoorbeeld de woorden van het dictee van school toe. Ze komen samen op het eilandje <b>“Eigen woorden”</b> op de wereldkaart (vanaf 3 woorden). Foute opties mag u leeg laten: die maakt het spel dan zelf (ei↔ij, au↔ou, d↔t, g↔ch, dubbele medeklinkers, enz.).</p>
       <form class="form" id="wordform" autocomplete="off">
         <label for="f-word">Woord *</label>
         <input id="f-word" required maxlength="40" placeholder="bijv. wordt" autocapitalize="off" spellcheck="false">
@@ -340,6 +419,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
     <div class="card section">
       <h2>🔄 Voortgang</h2>
       <p class="small-note" id="progress-info"></p>
+      <p class="small-note">De voortgang wordt alleen op dit apparaat (in deze browser) bewaard. Wissen kan niet ongedaan worden gemaakt.</p>
       <div class="btnrow" style="justify-content:flex-start">
         <button class="btn small orange" id="btn-reset" type="button">Voortgang wissen</button>
         <button class="btn small white" id="btn-clearwords" type="button">Alle eigen woorden wissen</button>
@@ -365,9 +445,17 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 'use strict';
 /* =========================================================
    WOORDENLIJSTEN  –  W(woord, zin, [foute opties], uitleg, ezelsbruggetje)
+   Opbouw: WORLDS (werelden/eilanden) -> levels -> words.
+   Een nieuwe wereld toevoegen? Zet gewoon een extra blok { id, name, icon,
+   scenery, land, sand, levels:[...] } achteraan in WORLDS. De kaart, de mist,
+   het opslaan en het vrijspelen gaan dan vanzelf. Level-nummers (id) worden
+   per wereld automatisch 1, 2, 3… gemaakt.
+   Baas-opties (optioneel): hp (standaard 100), twists: ['shield','ghost',
+   'move','split','shrink','rage'], shieldIcon, twistHint, rageSay, final:true.
    ========================================================= */
 const W=(w,s,f,u,e)=>({w,s,f,u,e});
-const LEVELS=[
+const WORLDS=[
+{ id:1, name:'Zonnig Eiland', icon:'🏝️', scenery:'🌴⛰️🐚', land:'#7ed957', sand:'#f6dc9b', levels:[
 { id:1, title:'ei of ij?', sub:'Korte ei en lange ij', icon:'🥚', color:'#c98a00', options:3,
   intro:'<p>De <b>korte ei</b> en de <b>lange ij</b> klinken precies hetzelfde!</p><p>Je moet dus per woord onthouden welke het is. In dit level leer je handige rijmpjes om ze te onthouden. 🥚</p>',
   boss:{name:'Eiko de IJsklomp', color:'#7fd3f7', dark:'#2b8fc0', light:'#d6f3ff', shape:'round', eyes:2, top:'spikes', spikeColor:'#ffffff',
@@ -534,25 +622,252 @@ const LEVELS=[
   W('duizend','Er staan wel duizend sterren aan de hemel.',['duizent','duisend','duizendt'],'Duizend eindigt op een d. Maak het woord langer: duizenden.','Duizenden sterren: duizen-den. Hoor je de d? ⭐'),
   W('baby','De baby slaapt in de wieg.',['beebie','bebie','babie'],'Baby is een Engels woord. Je schrijft het met een y aan het eind.','Baby en hobby: Engelse woorden met een y aan het eind! 👶')
 ]}
+]},
+{ id:2, name:'Vulkaaneiland', icon:'🌋', scenery:'🌋🔥🪨', land:'#e8a26a', sand:'#f7d9a8', levels:[
+{ id:1, title:'ei of ij? Deel 2', sub:'Lastigere woorden met ei en ij', icon:'🤫', color:'#b35c00', options:4,
+  intro:'<p>Je kent de <b>korte ei</b> en de <b>lange ij</b> al. Nu komen er lastigere woorden!</p><p>Ze klinken nog steeds hetzelfde, dus je moet per woord onthouden welke het is. De ezelsbruggetjes helpen je. 🤫</p>',
+  boss:{name:'IJzerkop Reinier', color:'#8fa3bf', dark:'#4b5c78', light:'#e1e8f2', shape:'square', eyes:2, top:'helmet', deco:'dots', hp:120,
+        twists:['shield'], shieldIcon:'🛡️', twistHint:'Hij heeft een ijzeren schild 🛡️. Zie je het schild? Wacht even, dan gaat het weg!',
+        taunts:['Mijn ijzeren hoofd is keihard! Ei of ij? Hahaha!','Ik heb een geheim: niemand kan mij verslaan!'], mid:'Au! Er zit een deuk in mijn helm!', lose:'Mijn geheim is verklapt: jij bent sterker dan ijzer!'},
+  words:[
+  W('geheim','Dit is ons geheim, vertel het aan niemand!',['gehijm','gehaim','geheimm'],'Geheim schrijf je met de korte ei.','Een geheim houd je klein: je vertelt het aan niemand. Klein en geheim hebben allebei de korte ei! 🤫'),
+  W('prijs','Wie wint de eerste prijs?',['preis','prijz','prys'],'Prijs schrijf je met de lange ij en een s aan het eind. Let op: twee prijzen schrijf je wél met een z!','Voor de eerste prijs moet je een lange sprong maken: de lange ij! 🏆'),
+  W('ijzer','Het hek is van ijzer.',['eizer','ijser','ijzur'],'IJzer schrijf je met de lange ij, en in het midden hoor je een z. Aan het begin van een zin schrijf je IJ met twee hoofdletters: IJzer.','Een ijzeren staaf is lang en sterk, net als de lange ij! 🔩'),
+  W('eiland','Op het eiland staan palmbomen.',['ijland','eilant','ailand'],'Eiland schrijf je met de korte ei. Aan het eind staat een d: twee eilanden.','Een eiland ligt in de zee als een ei in een bakje water: EI-land! 🏝️ Maak het langer: ei-lan-den. Hoor je de d?'),
+  W('wijzer','De grote wijzer van de klok staat op twaalf.',['weizer','wijser','wijzur'],'Wijzer schrijf je met de lange ij. Een wijzer wijst de tijd aan.','Een wijzer is lang en dun, net als de lange ij. Wijzer, wijst en tijd: allemaal met ij! 🕐'),
+  W('ontbijt','Bij het ontbijt eet ik een boterham.',['ontbeit','ontbijd','onbijt'],'Ontbijt is ont + bijt. Bijten schrijf je met de lange ij, en aan het eind staat een t.','Bij het ontbijt bijt je in je boterham: ont-BIJT! 🥪'),
+  W('reiger','De reiger staat op één poot in de sloot.',['rijger','reigur','reicher'],'Reiger schrijf je met de korte ei. In het midden staat een g.','Let op: de reiger heeft de korte ei, de tijger de lange ij! Een reiger legt eieren, een tijger niet. 🥚'),
+  W('vijver','In de vijver zwemmen goudvissen.',['veiver','vijfer','vijvr'],'Vijver schrijf je met de lange ij. In het midden staat een v, niet de f van vijf.','Een vijver is lang en nat: de lange ij. Vijf heeft een f, maar vijver een v! 🐟'),
+  W('tijd','Het is tijd om naar bed te gaan.',['teid','tijt','tijdt'],'Tijd schrijf je met de lange ij en een d aan het eind. Maak het woord langer: tijden.','Tijd duurt lang, dus de lange ij. En maak het langer: tij-den. Hoor je de d? ⏰'),
+  W('blij','Ik ben blij met mijn nieuwe fiets.',['blei','bly','bleij'],'Blij schrijf je met de lange ij.','Als je blij bent, maak je een lange sprong in de lucht: de lange ij! 😄'),
+  W('lijm','Ik plak het papier vast met lijm.',['leim','lijmm','lym'],'Lijm schrijf je met de lange ij.','Lijm trekt lange, plakkerige draden: de lange ij! 🧴'),
+  W('konijn','Het konijn eet een wortel.',['konein','konijnn','konyn'],'Konijn eindigt op -ijn, met de lange ij.','Een konijn heeft lange oren: de lange ij! 🐰'),
+  W('gordijn','Doe het gordijn maar dicht.',['gordein','gourdijn','gordijnn'],'Gordijn eindigt op -ijn, met de lange ij. Gordijn rijmt op konijn!','Een gordijn hangt lang naar beneden: de lange ij! 🪟'),
+  W('scheidsrechter','De scheidsrechter blaast op zijn fluitje.',['schijdsrechter','scheitsrechter','sgeidsrechter'],'Scheidsrechter is scheids + rechter. Het komt van scheiden: spelers die ruzie hebben uit elkaar halen. Scheiden schrijf je met de korte ei. En let op: je hoort ts, maar je schrijft ds.','De scheidsrechter houdt ruziemakers uit elkaar: hij scheidt ze. Scheiden met ei, dus sch-EI-dsrechter! ⚽'),
+  W('einde','Het einde van het verhaal is spannend.',['ijnde','einte','ainde'],'Einde schrijf je met de korte ei, en daarna nde.','Aan het einde van de paaseierenjacht vind je het laatste ei: EI-nde! 🥚')
+]},
+{ id:2, title:'au, ou, aai, ooi, oei', sub:'Geen j na aai, ooi en oei!', icon:'🍄', color:'#0b7a75', options:4,
+  intro:'<p><b>au</b> en <b>ou</b> klinken hetzelfde, dat weet je al. Je moet dus onthouden welke het is.</p><p>Nieuw: <b>aai</b>, <b>ooi</b> en <b>oei</b>. Daar staat altijd een <b>i</b> aan het eind: m<b>aai</b>en, g<b>ooi</b>en, gr<b>oei</b>en. Er komt <b>nooit</b> een j achter! 🙅</p>',
+  boss:{name:'Kabouter Klauwhaai', color:'#3fb6c9', dark:'#1d6f7d', light:'#d5f4f8', shape:'round', eyes:2, top:'gnome', deco:['beard','teeth'], hp:120,
+        twists:['ghost'], twistHint:'Hij wordt soms onzichtbaar 👻. Wacht even tot hij terug is, en tik dan weer!',
+        taunts:['Hap hap! Ik gooi al je woorden in de zee!','Aai, ooi, oei… ik maak je helemaal duizelig!'], mid:'Oei! Mijn puntmuts zakt af!', lose:'Oei oei! Jij kent alle au’s, ou’s en oei’s!'},
+  words:[
+  W('bouwen','Wij bouwen een hut in het bos.',['bauwen','bouwwen','bowen'],'Bouwen schrijf je met ouw. Ik bouw, wij bouwen.','Wij bouwen een hut van oud hout: bouwen, oud en hout hebben allemaal ou! 🔨'),
+  W('vouwen','Ik kan een vliegtuigje vouwen.',['vauwen','fouwen','vowen'],'Vouwen schrijf je met ouw. Ik vouw, wij vouwen.','Vouw een vliegtuigje van een oud blaadje: vouwen en oud hebben allebei ou! ✈️'),
+  W('fout','Ik heb geen enkele fout gemaakt.',['faut','foud','foutt'],'Fout schrijf je met ou en een t aan het eind: twee fouten.','Fout rijmt op hout en zout: allemaal met ou en een t! ❌'),
+  W('kabouter','De kabouter woont onder een paddenstoel.',['kabauter','kabouwter','kaboter'],'Kabouter schrijf je met ou.','Een kabouter is heel oud en heeft een lange baard: oud en kabouter hebben allebei ou! 🍄'),
+  W('kous','Er zit een gat in mijn kous.',['kaus','kouss','kouz'],'Kous schrijf je met ou en een s aan het eind.','Een kous trek je aan als het koud is: kous en koud hebben allebei ou! 🧦'),
+  W('jouw','Is dit jouw jas?',['jauw','jouww','jow'],'Jouw schrijf je met ouw. Het hoort bij jou: is dit jouw jas? Ja, die is van jou!','Jouw en jou zijn familie: allebei met ou! 🧥'),
+  W('klauw','De beer heeft scherpe nagels aan zijn klauw.',['klouw','klau','klaw'],'Klauw schrijf je met auw.','Een klauw krabt, en dan roep je: “Au!” Dus kl-AU-w! 🐻'),
+  W('pauze','In de pauze spelen we buiten.',['pouze','pause','pauzze'],'Pauze schrijf je met au, en in het midden staat een z.','Pauze begint net als pauw: p-au. Stel je voor dat er in de pauze een pauw over het schoolplein loopt! 🦚'),
+  W('applaus','Na de voorstelling krijgen we applaus.',['applous','aplaus','applauz'],'Applaus begint met app (twee p’s) en eindigt op aus.','Klap zo hard dat je handen roepen: “Au!” Dus appl-AU-s! 👏'),
+  W('flauw','Die grap is een beetje flauw.',['flouw','flau','flaw'],'Flauw schrijf je met auw.','Flauw rijmt op blauw en pauw: allemaal met auw! 😒'),
+  W('lawaai','De kinderen maken veel lawaai.',['lawaaj','lawai','lawaaij'],'Lawaai eindigt op aai: aa + i.','Lawaai is zo hard dat er drie klinkers achter elkaar staan: a-a-i! 📢'),
+  W('maaien','Papa gaat het gras maaien.',['maaijen','majen','maaie'],'Maaien schrijf je met aai. Na aai komt er geen j: maai-en.','Na aai, ooi en oei schrijf je nooit een j! 🌱'),
+  W('gooien','Ik kan de bal heel ver gooien.',['gooijen','gojen','gooie'],'Gooien schrijf je met ooi. Na ooi komt er geen j: gooi-en.','Ooi, wat gooi jij ver! Na ooi komt nooit een j. ⚾'),
+  W('groeien','De bloemen groeien in de tuin.',['groeijen','groejen','groeie'],'Groeien schrijf je met oei. Na oei komt er geen j: groei-en.','Oei, wat groei jij snel! Na oei komt nooit een j. 🌻'),
+  W('kooi','De hamster slaapt in zijn kooi.',['kooj','kooij','kooie'],'Kooi schrijf je met ooi: oo + i.','Een kooi is mooi voor een hamster: kooi en mooi rijmen en hebben allebei ooi! 🐹')
+]},
+{ id:3, title:'ng, nk en sch', sub:'Zingen, drinken en schrijven', icon:'🐍', color:'#2b8a3e', options:4,
+  intro:'<p><b>ng</b> of <b>nk</b>? Hoor je een korte <b>k</b>-tik? Dan schrijf je <b>nk</b>: bank, drinken. Hoor je geen k? Dan <b>ng</b>: koning, zingen.</p><p>Hoor je “sg” aan het begin? Dan schrijf je <b>sch</b>: schoen. Hoor je “sgr”? Dan <b>schr</b>: schrijven. 🐍</p>',
+  boss:{name:'Slingerslang Schrok', color:'#8bd346', dark:'#4a8a1a', light:'#e6f8d2', shape:'tall', eyes:2, deco:['stripes','tongue'], hp:130,
+        twists:['move'], twistHint:'Hij kronkelt heen en weer 🐍. Tik gewoon waar hij is!',
+        taunts:['Sssss! Ik schrok al je ng’s en nk’s op!','Sch of sg? Sssss, dat weet jij nooit!'], mid:'Ssss! Niet zo snel!', lose:'Ssssorry! Jij bent veel te ssssterk!'},
+  words:[
+  W('koning','De koning draagt een gouden kroon.',['konink','konning','konieng'],'Koning eindigt op ng. Je hoort aan het eind geen k, dus schrijf je ng.','ng zingt, nk tikt! Bij koning hoor je geen tik van een k, dus ng. 👑'),
+  W('jongen','Die jongen kan heel hard rennen.',['jonggen','jongun','joengen'],'Jongen schrijf je met ng. Je hoort geen k.','ng zingt, nk tikt! In jongen hoor je geen tik, dus ng. 👦'),
+  W('tong','De hond likt met zijn tong.',['tonk','tongg','tonng'],'Tong eindigt op ng. Maak het woord langer: tongen. Je hoort geen k.','Zeg eens “tonggg”: de ng kun je lang laten klinken, alsof je zingt! 👅'),
+  W('zingen','Wij zingen een liedje voor oma.',['singen','zinngen','zingun'],'Zingen begint met een z en heeft ng in het midden.','Bij zingen kun je de ng lang laten klinken: zing-ng-ng! 🎤'),
+  W('drinken','Na het voetballen wil ik water drinken.',['dringken','drinnken','drienken'],'Drinken schrijf je met nk. Je hoort duidelijk een k: drin-ken.','ng zingt, nk tikt! In drinken hoor je de tik van de k. 🥤'),
+  W('bank','Opa zit op de bank in het park.',['bangk','banck','bannk'],'Bank eindigt op nk: je hoort een k aan het eind.','Maak het woord langer: banken. Hoor je de k? Dan schrijf je nk! 🪑'),
+  W('stinken','Oude sokken stinken heel erg.',['stingken','stinkken','stienken'],'Stinken schrijf je met nk. Je hoort de k: stin-ken.','Stinken, drinken, denken: hoor je de k? Dan nk! 🧦'),
+  W('donker','Zonder lamp is het donker in de kelder.',['dongker','donkker','donkur'],'Donker schrijf je met nk: don-ker.','Hoor je de tik van de k? Dan schrijf je nk: don-ker. 🌑'),
+  W('vinger','Ik wijs met mijn vinger naar de kaart.',['vingur','finger','vinnger'],'Vinger schrijf je met ng. Je hoort geen k.','ng zingt, nk tikt! In vinger hoor je geen tik, dus ng. ☝️'),
+  W('schrijven','Ik kan mijn naam al schrijven.',['sgrijven','schreiven','srijven'],'Schrijven begint met schr: s-ch-r. In het midden staat de lange ij.','Zeg het langzaam: s-ch-r-ij-ven. Hoor je “sgr”? Dan schrijf je schr! ✏️'),
+  W('schreeuwen','Je mag niet schreeuwen in de klas.',['sgreeuwen','schreewen','schreuwen'],'Schreeuwen begint met schr, en in het midden staat eeuw.','Een meeuw kan heel hard schreeuwen: meeuw en schreeuwen hebben allebei eeuw! 🐦'),
+  W('schaap','Het schaap heeft een dikke wollen vacht.',['sgaap','schaab','sgaab'],'Schaap begint met sch. Je hoort “sg”, maar je schrijft sch. Aan het eind staat een p: twee schapen.','Hoor je “sg”? Schrijf sch! En maak het langer: scha-pen. Hoor je de p? 🐑'),
+  W('schoen','Ik strik de veter van mijn schoen.',['sgoen','sjoen','schoenn'],'Schoen begint met sch. Je hoort “sg”, maar je schrijft sch.','Schoen, school en schip: allemaal met sch! 👟'),
+  W('schrikken','Van een harde knal kun je schrikken.',['sgrikken','schriken','srikken'],'Schrikken begint met schr. Je hoort een korte i, dus de k dubbel: schrik-ken.','Boe! Schrik niet: eerst s-ch-r, en dan een dubbele k voor de korte i. 😱'),
+  W('schaar','Ik knip het papier met een schaar.',['sgaar','sghaar','schaarr'],'Schaar begint met sch. Je hoort “sg”, maar je schrijft sch.','Een schaar knipt: knip-knip, sch-aar! ✂️'),
+  W('schroef','Papa draait de schroef in de plank.',['sgroef','schroev','schrouf'],'Schroef begint met schr en eindigt op een f.','Hoor je “sgr”? Schrijf schr! Schroef en schrijven beginnen hetzelfde. 🔩')
+]},
+{ id:4, title:'Open of gesloten?', sub:'Klap het woord in stukjes', icon:'👏', color:'#c92a2a', options:4,
+  intro:'<p>Klap het woord in stukjes! 👏</p><p><b>Open stukje</b>: het stukje eindigt op een klinker, en die klinkt lang. Dan schrijf je maar één klinker: <b>ma</b>-ken, <b>ta</b>-fel.</p><p><b>Gesloten stukje</b>: het stukje eindigt op een medeklinker, en de klinker klinkt kort. Dan schrijf je de medeklinker vaak dubbel: <b>tas</b>-sen, <b>ket</b>-ting.</p>',
+  boss:{name:'Dubbeldoes de Tweekop', color:'#ff8787', dark:'#c92a2a', light:'#ffe3e3', shape:'wide', eyes:2, top:'antennae', deco:'dots', hp:130,
+        twists:['split'], twistHint:'Pas op: halverwege splitst hij zich in tweeën! Tik ze gewoon allebei.',
+        taunts:['Dubbel of niet dubbel? Ik ben altijd dubbel!','Twee koppen weten meer dan één! Hihi!'], mid:'Hé! Nu zijn we met z’n tweeën!', lose:'Dubbel verslagen! Jij kent open en gesloten stukjes!'},
+  words:[
+  W('maken','Wij gaan een taart maken.',['makken','maaken','maakken'],'Ma-ken: de a staat aan het eind van het stukje en klinkt lang. Dan is één a genoeg, en de k schrijf je niet dubbel.','Ik maak, wij ma-ken: lang en alleen aan het eind? Eén a! 🛠️'),
+  W('stenen','Op het strand zoek ik mooie stenen.',['steenen','stennen','steennen'],'Ste-nen: één steen, twee stenen. De e staat aan het eind van het stukje, dus één e.','Klap het: ste – nen. Lange e alleen aan het eind? Eén e is genoeg! 🪨'),
+  W('tafel','Het eten staat op tafel.',['taffel','taafel','tavel'],'Ta-fel: je hoort een lange a aan het eind van het stukje. Dus één a en één f.','Klap het: ta – fel. Geen hek nodig, de a mag lang zingen! 🍽️'),
+  W('zomer','In de zomer gaan we zwemmen.',['zommer','somer','zoommer'],'Zo-mer: lange o aan het eind van het stukje, dus één o en één m.','In de zo-mer zijn de dagen lang, en de o mag ook lang zijn: één o! ☀️'),
+  W('regen','Door de regen word ik nat.',['reegen','reggen','regun'],'Re-gen: lange e aan het eind van het stukje, dus één e.','Klap het: re – gen. De e staat alleen aan het eind, dus één e is genoeg! 🌧️'),
+  W('water','Ik drink een glas water.',['watter','waater','waterr'],'Wa-ter: lange a aan het eind van het stukje, dus één a en één t.','Wa – ter: de a staat alleen aan het eind, dus hij klinkt lang. Geen dubbele t! 💧'),
+  W('lepel','Ik eet mijn soep met een lepel.',['leepel','leppel','lepul'],'Le-pel: lange e aan het eind van het stukje, dus één e en één p.','Klap het: le – pel. De e mag lang zingen, geen hek nodig! 🥄'),
+  W('dromen','Ik wil vannacht over draken dromen.',['droomen','droommen','drome'],'Dro-men: ik droom, wij dro-men. De o staat aan het eind van het stukje, dus één o.','Wij dro-men: lang en alleen aan het eind? Eén o! 💭'),
+  W('tassen','In de gang hangen alle tassen.',['tasen','taassen','tasse'],'Tas-sen: je hoort een korte a, dus de s dubbel. Eén tas, twee tassen.','Korte klank? Zet er een hek van twee letters achter: tas-sen! 👜'),
+  W('bussen','Op het plein staan twee bussen.',['busen','buussen','busse'],'Bus-sen: je hoort een korte u, dus de s dubbel. Eén bus, twee bussen.','Twee bussen, twee s’en! 🚌'),
+  W('rennen','Wij rennen naar de overkant.',['renen','reenen','renne'],'Ren-nen: je hoort een korte e, dus de n dubbel. Ik ren, wij rennen.','Ik ren, wij ren-nen: het hek van twee n’s houdt de e kort! 🏃'),
+  W('stoppen','Bij een rood licht moet je stoppen.',['stopen','stoopen','stoppe'],'Stop-pen: je hoort een korte o, dus de p dubbel.','Stop! Twee p’s, net zo stevig als een stopbord: stop-pen. 🛑'),
+  W('wassen','Na het spelen moet ik mijn handen wassen.',['wasen','waassen','wasse'],'Was-sen: je hoort een korte a, dus de s dubbel.','Ik was, wij was-sen: korte a, dubbele s! 🧼'),
+  W('ketting','Mama draagt een gouden ketting.',['keting','keeting','kettin'],'Ket-ting: je hoort een korte e, dus de t dubbel.','Een ketting heeft schakels die aan elkaar vastzitten, net als de twee t’s! 📿'),
+  W('letter','De A is de eerste letter van het alfabet.',['leter','leeter','lettur'],'Let-ter: je hoort een korte e, dus de t dubbel.','Klap het: let – ter. Korte e? Dan een hek van twee t’s! 🔤'),
+  W('kikker','De kikker springt in de sloot.',['kiker','kiekker','kikkur'],'Kik-ker: je hoort een korte i, dus de k dubbel.','De kikker springt twee keer: k-k! Kik-ker. 🐸')
+]},
+{ id:5, title:'c, k en ch', sub:'Rare letters uit andere talen', icon:'🎪', color:'#9c5700', options:4,
+  intro:'<p>De <b>c</b> is een rare letter! Vóór een <b>e</b> of <b>i</b> klinkt hij als <b>s</b>: citroen. Vóór een <b>a, o, u</b> of een medeklinker klinkt hij als <b>k</b>: camping, clown.</p><p>En <b>ch</b> zegt soms <b>sj</b>, in woorden uit het Frans of Engels: douche, chips. Maar let op: veel woorden schrijf je gewoon met een <b>k</b>, zoals kano! 🎪</p>',
+  boss:{name:'Circusbaas Citroenzuur', color:'#f5d742', dark:'#a8860b', light:'#fff9db', shape:'pear', eyes:3, top:'jester', deco:'dots', hp:140,
+        twists:['shield'], shieldIcon:'☂️', twistHint:'Hij verstopt zich soms onder zijn paraplu ☂️. Wacht even, dan komt hij weer tevoorschijn!',
+        taunts:['Welkom in mijn circus! C of k? Hahaha!','Kijk mij jongleren met al jouw letters!'], mid:'Oei, mijn muts met belletjes valt bijna!', lose:'Applaus voor jou! Jij bent de echte circusster!'},
+  words:[
+  W('camping','In de zomer gaan we naar de camping.',['kamping','camphing','campink'],'Camping komt uit het Engels. Je hoort een k, maar je schrijft een c.','Camping, cactus en clown: een c vóór de a, o of u klinkt als k! ⛺'),
+  W('cactus','Pas op, de cactus prikt!',['kaktus','kactus','cactis'],'Cactus schrijf je met twee keer een c. Ze klinken allebei als k, want er staat een a of een t achter.','Een cactus heeft twee c’s, net zo krom als twee prikkers. Au! 🌵'),
+  W('clown','De clown heeft een rode neus.',['klown','klaun','clauwn'],'Clown komt uit het Engels. Je schrijft cl aan het begin en own aan het eind, maar je zegt “klaun”.','Een clown heeft een ronde rode neus, net als de o in cl-O-wn! 🤡'),
+  W('circus','In het circus zie ik een olifant.',['sirkus','cirkus','circkus'],'Circus begint met een c die klinkt als s, want er staat een i achter. De tweede c klinkt als k, want er staat een u achter.','Een c vóór e of i zegt sss, een c vóór a, o of u zegt k: cir-cus! 🎪'),
+  W('citroen','Een citroen is heel zuur.',['sitroen','citroun','cietroen'],'Citroen begint met een c die klinkt als s, want er staat een i achter.','Een citroen is zo zuur dat je sist: sss! Die s schrijf je hier als c. 🍋'),
+  W('cirkel','Teken een cirkel op het bord.',['sirkel','circel','cirkul'],'Cirkel begint met een c die klinkt als s, want er staat een i achter. Daarna komt -kel met een k.','Een c is een cirkel met een hapje eruit! Dus cirkel begint met een c. ⭕'),
+  W('centimeter','Mijn potlood is vijftien centimeter lang.',['sentimeter','centiemeter','centimeeter'],'Centimeter begint met een c die klinkt als s, want er staat een e achter.','Een cent is een klein muntje en een centimeter is een klein stukje: allebei met een c! 📏'),
+  W('concert','We gaan naar een concert in het park.',['koncert','consert','konsert'],'Concert heeft twee c’s. De eerste klinkt als k (er staat een o achter), de tweede als s (er staat een e achter).','c + o = k, c + e = s: con-cert! 🎵'),
+  W('chips','Op het feestje eten we chips.',['sjips','chibs','tsjips'],'Chips komt uit het Engels. Je zegt “sjips”, maar je schrijft ch.','Ch kan ook sj zeggen: chips, douche en machine! 🥔'),
+  W('douche','Na het sporten ga ik onder de douche.',['doesje','douce','douchje'],'Douche komt uit het Frans. Je zegt “doesje”, maar je schrijft ou en ch, en aan het eind een e.','Onder de douche zegt het water: sjjjj! Die sj schrijf je als ch. 🚿'),
+  W('machine','De machine in de fabriek maakt koekjes.',['masjiene','machiene','masine'],'Machine komt uit het Frans. De ch klinkt als sj, en ine klinkt als “ien”.','Lees het als een robot, letter voor letter: ma-chi-ne! 🤖'),
+  W('parachute','De parachute gaat open in de lucht.',['parasjute','parachuut','paraschute'],'Parachute komt uit het Frans. De ch zeg je als sj, en de u als uu: “parasjuute”.','Para-chu-te: een ch die sj zegt, net als in douche! 🪂'),
+  W('kampioen','Ons team is kampioen geworden!',['campioen','kampjoen','kampioun'],'Kampioen schrijf je met een k aan het begin. Daarna komen een i en oe: kam-pi-oen.','De K van Kampioen is net zo stoer als de K van Koning! 🏆'),
+  W('kano','We varen met de kano over het meer.',['cano','kanno','kanoo'],'Kano schrijf je met een k. Ka-no: de a staat aan het eind van het stukje, dus één a en één n.','Een kano schiet als een K recht door het water! 🛶'),
+  W('kapitein','De kapitein staat op het schip.',['capitein','kapitijn','kapitain'],'Kapitein schrijf je met een k aan het begin en de korte ei aan het eind.','Kapitein rijmt op trein en plein: allemaal met de korte ei! ⚓')
+]},
+{ id:6, title:'Verkleinwoorden', sub:'-je, -tje, -pje of -etje?', icon:'🔍', color:'#862e9c', options:4,
+  intro:'<p>Iets kleins? Dan plak je er een stukje achter!</p><p><b>-je</b>: na de meeste medeklinkers: huis<b>je</b>, kop<b>je</b>.<br><b>-tje</b>: na een klinker, of na een lange klank + l, n of r: stoel<b>tje</b>, trein<b>tje</b>.<br><b>-pje</b>: na een lange klank + m, of na lm en rm: boom<b>pje</b>, arm<b>pje</b>.<br><b>-etje</b>: na een korte klank + l, m, n of r, met een dubbele letter: bal<b>letje</b>, man<b>netje</b>. 🔍</p>',
+  boss:{name:'Reus Krimpie', color:'#e599f7', dark:'#9c36b5', light:'#f8e1fc', shape:'tall', eyes:1, top:'sprout', deco:'dots', hp:140,
+        twists:['shrink'], twistHint:'Hoe meer je tikt, hoe kleiner hij wordt! 🔍',
+        taunts:['Ik ben een reus! Ik word nooit een verkleinwoord!','Ik ben zó groot, jij bent maar een mannetje!'], mid:'Hé! Ik word steeds kleiner!', lose:'Help! Ik ben nu een piepklein reusje!'},
+  words:[
+  W('boompje','In de tuin staat een klein boompje.',['boomtje','boomje','boompie'],'Boom eindigt op een m met een lange oo ervoor. Dan wordt het -pje: boompje.','Zeg “boompje”: je lippen gaan dicht bij de m, en dan floept de p eruit! 🌳'),
+  W('mannetje','Ik teken een grappig mannetje.',['manetje','mantje','mannentje'],'Man heeft een korte a. Dan schrijf je de n dubbel en komt er -etje achter: man-ne-tje.','Korte klank? Dan een dubbele letter en -etje: man → mannetje, bal → balletje. 🧍'),
+  W('koninkje','In het sprookje woont een klein koninkje.',['koningje','koningetje','koninktje'],'Koning wordt koninkje: de g valt weg en er komt -kje achter. Dat is een lastige!','Een koninkje is zo klein dat hij zijn g kwijt is: konin-k-je! 👑'),
+  W('huisje','Het vogeltje woont in een huisje.',['huistje','huisetje','huisie'],'Huis eindigt op een s. Dan plak je er gewoon -je achter: huisje.','Na een s, k, p of t is het makkelijk: gewoon -je! 🏠'),
+  W('stoeltje','Mijn zusje zit op een stoeltje.',['stoelje','stoeletje','stoelpje'],'Stoel eindigt op een l met een lange oe ervoor. Dan wordt het -tje: stoeltje.','Lange klank + l, n of r? Dan -tje: stoeltje, treintje, deurtje. 🪑'),
+  W('treintje','Het treintje rijdt rondjes door de kamer.',['treinje','treinetje','treinpje'],'Trein eindigt op een n met ei ervoor. Dan wordt het -tje: treintje.','Toet toet! Achter het treintje hangt een -tje! 🚂'),
+  W('raampje','Door het raampje zie ik de zee.',['raamtje','raamje','raametje'],'Raam eindigt op een m met een lange aa ervoor. Dan wordt het -pje: raampje.','Lange klank + m? Dan -pje: raampje, boompje, duimpje. 🪟'),
+  W('balletje','De poes speelt met een balletje.',['baltje','baletje','balltje'],'Bal heeft een korte a. Dan schrijf je de l dubbel en komt er -etje achter: bal-le-tje.','Het balletje stuitert twee keer: een dubbele l! ⚽'),
+  W('autootje','Mijn broertje speelt met een autootje.',['autotje','autoje','autoopje'],'Auto eindigt op een lange o. Dan schrijf je de o dubbel en plak je er -tje achter: autootje.','Een autootje heeft twee koplampen, en in het midden staan twee o’s: auto-o-tje! 🚗'),
+  W('sterretje','Aan de hemel twinkelt een sterretje.',['stertje','steretje','sterrtje'],'Ster heeft een korte e. Dan schrijf je de r dubbel en komt er -etje achter: ster-re-tje.','Twinkel twinkel, klein sterretje: korte e, dubbele r! ⭐'),
+  W('zonnetje','Het zonnetje schijnt vandaag.',['zontje','zonetje','zonnje'],'Zon heeft een korte o. Dan schrijf je de n dubbel en komt er -etje achter: zon-ne-tje.','Het zonnetje schijnt: zon → zonnetje, met twee n’s! ☀️'),
+  W('deurtje','Het poppenhuis heeft een klein deurtje.',['deurje','deuretje','deurrtje'],'Deur eindigt op een r met eu ervoor. Dan wordt het -tje: deurtje.','Klop klop, een klein deurtje: lange klank + r = -tje! 🚪'),
+  W('armpje','De baby zwaait met zijn armpje.',['armtje','armje','armetje'],'Arm eindigt op rm. Dan wordt het -pje: armpje.','Na rm en lm komt -pje: armpje, filmpje! 💪'),
+  W('duimpje','Ik steek mijn duimpje op.',['duimtje','duimje','duimetje'],'Duim eindigt op een m met ui ervoor. Dan wordt het -pje: duimpje.','Duimpje omhoog 👍: na de m komt -pje!'),
+  W('kopje','Oma schenkt thee in een kopje.',['koppje','koptje','kopetje'],'Kop eindigt op een p. Dan plak je er gewoon -je achter: kopje.','Na een p, t, k of s: gewoon -je. Kopje, huisje, boekje! ☕')
+]},
+{ id:7, title:'Verleden tijd: -te of -de?', sub:'’t Kofschip helpt je!', icon:'⛵', color:'#364fc7', options:4,
+  intro:'<p>Is het al gebeurd? Dan gebruik je de <b>verleden tijd</b>: gisteren fiets<b>te</b> ik, vroeger woon<b>de</b> ik.</p><p>Zoek eerst de <b>stam</b>: dat is de ik-vorm (ik fiets, ik woon). Zit de laatste letter van de stam in <b>’t kofschip</b> (t, k, f, s, ch, p)? Dan plak je er <b>-te</b> achter. Anders <b>-de</b>. ⛵</p>',
+  boss:{name:'Spookkapitein Kofschip', color:'#e9ecef', dark:'#495057', light:'#ffffff', shape:'ghost', eyes:2, top:'pirate', deco:'patch', hp:150,
+        twists:['ghost','move'], twistHint:'Hij zweeft heen en weer en wordt soms onzichtbaar 👻. Wacht even en tik dan weer!',
+        taunts:['Ahoi! Ik vaar op ’t kofschip… en jij zinkt!','Gisteren won ik, en vandaag win ik weer! Hahaha!'], mid:'Arrr! Mijn schip maakt water!', lose:'Arrr… jij kent ’t kofschip beter dan ik!'},
+  words:[
+  W('fietste','Gisteren fietste ik naar opa.',['fietsde','fiestte','fietse'],'Fietsen: de stam is fiets. De laatste letter is een s, en die zit in ’t kofschip. Dus: fiets + te = fietste.','’t Kofschip: t, k, f, s, ch en p. Zit de laatste letter van de stam erin? Dan -te! 🚲'),
+  W('woonde','Vroeger woonde opa in Amsterdam.',['woonte','woondde','woonnde'],'Wonen: de stam is woon. De n zit niet in ’t kofschip. Dus: woon + de = woonde.','Geen letter uit ’t kofschip? Dan -de: woon-de! 🏠'),
+  W('speelde','Gisteren speelde ik met mijn vriend.',['speelte','speeldde','speeltte'],'Spelen: de stam is speel. De l zit niet in ’t kofschip, dus: speel + de = speelde.','Speel… l… niet in ’t kofschip? Dan -de! ⚽'),
+  W('werkte','Mama werkte de hele dag.',['werkde','werkkte','wercte'],'Werken: de stam is werk. De k zit in ’t kofschip, dus: werk + te = werkte.','De k van ’t Kofschip: werk-te! 💼'),
+  W('maakte','Ik maakte een tekening voor de juf.',['maakde','makte','maakkte'],'Maken: de stam is maak. De k zit in ’t kofschip, dus: maak + te = maakte.','Ik maak, ik maakte: de k zit in ’t kofschip, dus -te! 🎨'),
+  W('belde','Oma belde ons op mijn verjaardag.',['belte','bellde','beldde'],'Bellen: de stam is bel. De l zit niet in ’t kofschip, dus: bel + de = belde.','Tring tring! Bel… l… geen kofschip-letter, dus -de. 📞'),
+  W('hoopte','Ik hoopte op mooi weer.',['hoopde','hopte','hooptte'],'Hopen: de stam is hoop. De p zit in ’t kofschip, dus: hoop + te = hoopte.','De p van ’t kofschiP: hoop-te! 🤞'),
+  W('leerde','In groep drie leerde ik lezen.',['leerte','lerde','leerdde'],'Leren: de stam is leer. De r zit niet in ’t kofschip, dus: leer + de = leerde.','Leer… r… niet in ’t kofschip? Dan -de! 📖'),
+  W('wachtte','Ik wachtte op de bus.',['wachte','wachtde','wagtte'],'Wachten: de stam is wacht. De t zit in ’t kofschip, dus: wacht + te = wachtte. Twee t’s achter elkaar!','Wacht + te: de t van de stam blijft staan, en dan komt -te erachter. Dus tt! ⏳'),
+  W('danste','Mijn zus danste op het feest.',['dansde','dansste','danzte'],'Dansen: de stam is dans. De s zit in ’t kofschip, dus: dans + te = danste.','De s van ’t kofSchip: dans-te! 💃'),
+  W('poetste','Ik poetste mijn tanden voor het slapen.',['poetsde','poetse','poette'],'Poetsen: de stam is poets. De s zit in ’t kofschip, dus: poets + te = poetste.','Poets… s… in ’t kofschip! Dus -te. 🪥'),
+  W('huilde','De baby huilde de hele nacht.',['huilte','huillde','huildde'],'Huilen: de stam is huil. De l zit niet in ’t kofschip, dus: huil + de = huilde.','Huil… l… geen kofschip-letter, dus -de. 😢'),
+  W('lachte','Iedereen lachte om de grap.',['lachde','lagte','lachtte'],'Lachen: de stam is lach. De ch zit in ’t kofschip, dus: lach + te = lachte.','De ch van ’t kofsCHip: lach-te! 😂'),
+  W('stopte','De bus stopte bij de halte.',['stopde','stoppte','stoptte'],'Stoppen: de stam is stop. De p zit in ’t kofschip, dus: stop + te = stopte. De stam heeft maar één p!','Ik stop, ik stopte: één p, want de stam is stop! 🛑'),
+  W('zwaaide','Ik zwaaide naar mijn vriendje.',['zwaaite','zwaaiide','zwaajde'],'Zwaaien: de stam is zwaai. De i zit niet in ’t kofschip, dus: zwaai + de = zwaaide.','Zwaai… i… geen kofschip-letter, dus -de! 👋')
+]},
+{ id:8, title:'Meervoud en strikvragen', sub:'De eindbaas wacht…', icon:'🌋', color:'#c2410c', options:4,
+  intro:"<p>Meer dan één? Meestal plak je er <b>-en</b> achter. Een <b>s</b> wordt dan vaak een <b>z</b>, en een <b>f</b> een <b>v</b>: huis → hui<b>z</b>en, brief → brie<b>v</b>en.</p><p>Woorden op <b>-el</b> en <b>-er</b> krijgen een <b>s</b>: sleutels. Eindigt een woord op een lange <b>a, o, u, i</b> of <b>y</b>? Dan schrijf je <b>'s</b>: opa's, foto's.</p><p>En nog wat strikvragen met <b>th</b>, <b>y</b> en <b>ie</b>. Daarna wacht de eindbaas! 🌋</p>",
+  boss:{name:'Vulkaankoning Woordvuur', color:'#ff6b35', dark:'#a12a00', light:'#ffd8a8', shape:'wide', eyes:3, top:['flame','wings','crown'], deco:'dots', hp:180, final:true,
+        twists:['shield','rage'], shieldIcon:'🪨', rageSay:'GRRR! Nu word ik pas echt boos! Probeer me maar te raken!',
+        twistHint:'De eindbaas! Hij heeft een lavaschild 🪨 en gaat later rondspringen. Wacht als je het schild ziet. Jij kunt het!',
+        taunts:['Ik ben de koning van de vulkaan! Al jouw woorden smelten!',"Foto's, opa's, pony's… ik laat alles ontploffen!"], mid:'Oei! Mijn vuur wordt kleiner!', lose:'Pfff… mijn vuur is uit! Jij bent de held van het Vulkaaneiland! 🌋'},
+  words:[
+  W('huizen','In onze straat staan veel huizen.',['huisen','huizzen','huyzen'],'Eén huis, twee huizen. Als het woord langer wordt, verandert de s in een z: hui-zen.','De s gaat zoemen als een z als het woord langer wordt: huis → huizzzen! 🏠'),
+  W('wolven','In het bos wonen wolven.',['wolfen','wolvven','wollven'],'Eén wolf, twee wolven. Als het woord langer wordt, verandert de f in een v.','Wolf wordt wolven: de f wordt een v, net als brief → brieven. 🐺'),
+  W('brieven','De postbode brengt drie brieven.',['briefen','brievven','briven'],'Eén brief, twee brieven. De f wordt een v, en de ie blijft staan.','Brief → brieven: de f wordt een v! ✉️'),
+  W('neuzen','Clowns hebben rode neuzen.',['neusen','neuzzen','nuezen'],'Eén neus, twee neuzen. Als het woord langer wordt, verandert de s in een z.','Neus → neuzen, huis → huizen: de s wordt een z! 🤡'),
+  W("foto's","Ik maak foto's van de zee.",['fotos','fotoos',"fotto's"],"Foto eindigt op een lange o. Zonder hoogkommaatje zou je “fotos” lezen, met een korte o aan het eind. Daarom schrijf je: foto's.","Het hoogkommaatje beschermt de lange o: foto's, auto's en opa's! 📸"),
+  W("opa's","Mijn twee opa's komen op bezoek.",['opas','opaas',"oppa's"],"Opa eindigt op een lange a. Zonder hoogkommaatje zou je “opas” lezen, met een korte a. Daarom schrijf je: opa's.","Twee opa's en twee oma's: allebei met een hoogkommaatje! 👴👴"),
+  W('sleutels','Papa zoekt zijn sleutels.',['sleutells','sleutelz','sluetels'],'Sleutel eindigt op -el. Woorden op -el en -er krijgen meestal een s: sleutels.','Sleutels, lepels, vogels: -el + s! 🔑'),
+  W('kamers','Ons huis heeft vier kamers.',['kameren','kammers','kamerz'],'Kamer eindigt op -er. Dan plak je er een s achter: kamers.','Kamers, emmers, ladders: -er + s! 🚪'),
+  W('pony','Op de boerderij rijd ik op een pony.',['ponie','ponnie','poney'],'Pony is een Engels woord. Je hoort “ie” aan het eind, maar je schrijft een y.','Pony, baby en hobby: Engelse woorden met een y aan het eind! 🐴'),
+  W('hobby','Voetballen is mijn hobby.',['hobbie','hoby','hobbi'],'Hobby is ook een Engels woord: twee b’s en een y aan het eind.','De y lijkt op iemand die juicht met zijn armen omhoog: Y! Zo blij ben je met je hobby. 🙌'),
+  W('thuis','Na school ben ik weer thuis.',['tuis','thuys','thuiss'],'Thuis schrijf je met th. Je hoort alleen een t.','Thuis drink je thee: thuis en thee allebei met th! 🏡'),
+  W('theater','Met de klas gaan we naar het theater.',['teater','theaater','thejater'],'Theater schrijf je met th, en in het midden staat ea.','In het theater zie je een toneelstuk: th-ea-ter, met th net als thee. 🎭'),
+  W('papier','Ik teken op een vel papier.',['papir','pappier','papieer'],'Papier schrijf je met ie: pa-pier. Je hoort een lange ie.','Papier eindigt op -ier, net als dier en plezier! 📄'),
+  W('piraat','De piraat zoekt een schat.',['pieraat','pirraat','pirat'],'Piraat schrijf je met één i: pi-raat. Je hoort “ie”, maar het woord komt uit een andere taal en je schrijft één i.','Een piraat heeft één ooglapje, en piraat heeft één i! 🏴‍☠️'),
+  W('fluit','Ik speel een liedje op mijn fluit.',['flaut','floit','fluitt'],'Fluit schrijf je met ui. Aan het eind staat een t: twee fluiten.','Maak het woord langer: flui-ten. Hoor je de t? En de ui klinkt als in uil! 🎵'),
+  W('trui','Ik trek mijn warme trui aan.',['truij','truy','troei'],'Trui schrijf je met ui. Er komt geen j achter.','Trui rijmt op lui en bui: allemaal eindigen ze op ui, zonder j! 🧶')
+]}
+]}
 ];
+WORLDS.forEach(Wd=>Wd.levels.forEach((L,i)=>{L.id=i+1;L.world=Wd.id;}));
+const ALL_LEVELS=[].concat(...WORLDS.map(Wd=>Wd.levels));
 const CUSTOM_BOSS={name:'Eigenwijze Eppo', color:'#20c997', dark:'#0f7d5c', light:'#d3f9ec', shape:'round', eyes:1, top:'antenna',
   taunts:['Deze woorden zijn speciaal voor jou uitgekozen. Hihi!','Eigen woorden? Die ken jij toch niet!'], mid:'Hé! Jij oefent goed!', lose:'Wauw, jij kent al je eigen woorden!'};
 </script>
 <script>
 'use strict';
 /* ========================= OPSLAG ========================= */
-const STORE_KEY='spellingheld_v1';
-function freshState(){return {unlocked:1,stars:{},custom:[],muted:false,voiceURI:null,rate:0.85};}
-let state=loadState();
-function loadState(){
-  try{const raw=localStorage.getItem(STORE_KEY); if(!raw) return freshState();
-    const s=JSON.parse(raw); const d=freshState(); Object.assign(d,s||{});
-    if(!Array.isArray(d.custom)) d.custom=[]; if(typeof d.stars!=='object'||!d.stars) d.stars={};
-    d.unlocked=Math.max(1,Math.min(LEVELS.length,parseInt(d.unlocked,10)||1));
-    d.rate=Math.min(1.2,Math.max(0.5,+d.rate||0.85)); return d;
-  }catch(e){return freshState();}
+/* Versie 2 bewaart de voortgang per wereld:
+   {v:2, worlds:{1:{unlocked,stars:{1:3,...}}, 2:{...}}, revealed:[1], customStars, custom, muted, voiceURI, rate}
+   Oude opslag (spellingheld_v1: {unlocked, stars:{1..8, custom}, custom, ...}) wordt
+   automatisch omgezet naar wereld 1. De oude sleutel blijft als reservekopie staan. */
+const STORE_KEY='spellingheld_v2', OLD_KEY='spellingheld_v1';
+function freshState(){return {v:2,worlds:{},revealed:[1],customStars:0,custom:[],muted:false,voiceURI:null,rate:0.85};}
+function migrateV1(o){
+  o=o||{}; const stars={}; const os=(o.stars&&typeof o.stars==='object')?o.stars:{};
+  Object.keys(os).forEach(k=>{if(k!=='custom')stars[k]=os[k];});
+  return {v:2,worlds:{1:{unlocked:o.unlocked,stars}},revealed:[1],customStars:os.custom||0,
+    custom:o.custom,muted:!!o.muted,voiceURI:o.voiceURI||null,rate:o.rate,migratedFrom:1};
 }
+function normalizeState(s){
+  const d=freshState(); Object.assign(d,(s&&typeof s==='object')?s:{}); d.v=2;
+  if(!Array.isArray(d.custom)) d.custom=[];
+  const src=(d.worlds&&typeof d.worlds==='object')?d.worlds:{}; d.worlds={};
+  WORLDS.forEach(Wd=>{
+    const p=(src[Wd.id]&&typeof src[Wd.id]==='object')?src[Wd.id]:{}; const st={};
+    const ps=(p.stars&&typeof p.stars==='object')?p.stars:{};
+    Wd.levels.forEach(L=>{const n=Math.round(+ps[L.id]||0); if(n>0) st[L.id]=Math.min(3,n);});
+    d.worlds[Wd.id]={unlocked:Math.max(1,Math.min(Wd.levels.length,parseInt(p.unlocked,10)||1)),stars:st};
+  });
+  d.revealed=(Array.isArray(d.revealed)?d.revealed:[]).map(Number).filter(n=>n>0);
+  if(d.revealed.indexOf(WORLDS[0].id)<0) d.revealed.push(WORLDS[0].id);
+  d.customStars=Math.max(0,Math.min(3,Math.round(+d.customStars||0)));
+  d.rate=Math.min(1.2,Math.max(0.5,+d.rate||0.85));
+  return d;
+}
+function loadState(){
+  let s=null, migrated=false;
+  try{const raw=localStorage.getItem(STORE_KEY); if(raw) s=JSON.parse(raw);}catch(e){s=null;}
+  if(!s){try{const old=localStorage.getItem(OLD_KEY); if(old){s=migrateV1(JSON.parse(old));migrated=true;}}catch(e){s=null;}}
+  const d=normalizeState(s);
+  if(migrated){try{localStorage.setItem(STORE_KEY,JSON.stringify(d));}catch(e){}}
+  return d;
+}
+let state=loadState();
 function saveState(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}}
+/* Voortgang-hulpjes */
+const worldById=id=>WORLDS.find(Wd=>Wd.id===id)||null;
+const wprog=id=>state.worlds[id];
+function levelStars(L){return L.id==='custom'?state.customStars:(wprog(L.world).stars[L.id]||0);}
+function setLevelStars(L,n){if(L.id==='custom')state.customStars=n; else wprog(L.world).stars[L.id]=n;}
+function worldStars(Wd){return Wd.levels.reduce((a,L)=>a+levelStars(L),0);}
+function worldDone(Wd){return levelStars(Wd.levels[Wd.levels.length-1])>0;}
+function worldUnlocked(Wd){const i=WORLDS.indexOf(Wd);return i<=0||worldDone(WORLDS[i-1]);}
+function hasProgress(){return state.customStars>0||WORLDS.some(Wd=>wprog(Wd.id).unlocked>1||worldStars(Wd)>0);}
+function resetProgress(keepCustom){
+  state.worlds={}; state.revealed=[]; state.customStars=0;
+  if(!keepCustom) state.custom=[];
+  state=normalizeState(state); saveState();
+  try{localStorage.removeItem(OLD_KEY);}catch(e){}
+}
+function levelLabel(L){if(L.id==='custom')return '✏️';const Wd=worldById(L.world);return (Wd?Wd.icon+' ':'')+'Level '+L.id;}
 
 /* ========================= HULPJES ========================= */
 const $=s=>document.querySelector(s);
@@ -671,15 +986,31 @@ function updateSfxButtons(){$$('.sfx-toggle').forEach(b=>{b.textContent=state.mu
 function bossSVG(b,friendly){
   const S={round:{top:30,eye:95,mouth:138,path:'M100 30 C152 30 176 70 176 115 C176 162 145 184 100 184 C55 184 24 162 24 115 C24 70 48 30 100 30Z'},
            tall:{top:16,eye:82,mouth:132,path:'M100 16 C142 16 164 58 164 110 C164 162 140 186 100 186 C60 186 36 162 36 110 C36 58 58 16 100 16Z'},
-           wide:{top:44,eye:102,mouth:145,path:'M100 44 C162 44 190 84 190 126 C190 166 152 186 100 186 C48 186 10 166 10 126 C10 84 38 44 100 44Z'}}[b.shape||'round'];
+           wide:{top:44,eye:102,mouth:145,path:'M100 44 C162 44 190 84 190 126 C190 166 152 186 100 186 C48 186 10 166 10 126 C10 84 38 44 100 44Z'},
+           pear:{top:40,eye:100,mouth:142,path:'M100 40 C134 40 150 66 152 96 C154 120 182 138 182 160 C182 182 150 188 100 188 C50 188 18 182 18 160 C18 138 46 120 48 96 C50 66 66 40 100 40Z'},
+           ghost:{top:22,eye:90,mouth:134,nofeet:true,path:'M100 22 C150 22 172 62 172 110 L172 176 Q158 192 144 176 Q130 192 116 176 Q100 192 86 176 Q72 192 58 176 Q44 192 28 176 L28 110 C28 62 50 22 100 22Z'},
+           square:{top:36,eye:96,mouth:140,path:'M50 36 H150 Q180 36 180 66 V158 Q180 186 150 186 H50 Q20 186 20 158 V66 Q20 36 50 36Z'}}[b.shape||'round'];
   const T=S.top, c=b.color, d=b.dark, l=b.light;
-  let back='', front='';
-  if(b.top==='spikes'||b.spikes){const sc=b.spikeColor||d;[[62,14],[81,6],[100,2],[119,6],[138,14]].forEach(p=>{const x=p[0],o=p[1];back+=`<path d="M${x-12} ${T+o+14} L${x} ${T+o-24} L${x+12} ${T+o+14}Z" fill="${sc}" stroke="${d}" stroke-width="3" stroke-linejoin="round"/>`;});}
-  if(b.top==='horns'){back+=`<path d="M66 ${T+20} Q48 ${T-8} 56 ${T-34} Q70 ${T-6} 86 ${T+8}Z" fill="#fff4d6" stroke="${d}" stroke-width="4"/><path d="M134 ${T+20} Q152 ${T-8} 144 ${T-34} Q130 ${T-6} 114 ${T+8}Z" fill="#fff4d6" stroke="${d}" stroke-width="4"/>`;}
-  if(b.top==='ears'){back+=`<path d="M52 ${T+40} L44 ${T-22} L92 ${T+10}Z" fill="${c}" stroke="${d}" stroke-width="4" stroke-linejoin="round"/><path d="M148 ${T+40} L156 ${T-22} L108 ${T+10}Z" fill="${c}" stroke="${d}" stroke-width="4" stroke-linejoin="round"/><path d="M58 ${T+26} L54 ${T-6} L80 ${T+12}Z" fill="#ffb3c7"/><path d="M142 ${T+26} L146 ${T-6} L120 ${T+12}Z" fill="#ffb3c7"/>`;}
-  if(b.top==='antenna'){back+=`<line x1="100" y1="${T+4}" x2="100" y2="${T-26}" stroke="${d}" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="${T-32}" r="10" fill="#ff5a4f" stroke="${d}" stroke-width="4"/>`;}
-  if(b.top==='crown'){front+=`<path d="M62 ${T+10} L62 ${T-24} L80 ${T-8} L100 ${T-32} L120 ${T-8} L138 ${T-24} L138 ${T+10}Z" fill="#ffcc00" stroke="#a87b00" stroke-width="4" stroke-linejoin="round"/><circle cx="100" cy="${T-4}" r="6" fill="#ff4d6d"/><circle cx="76" cy="${T}" r="4.5" fill="#4dabf7"/><circle cx="124" cy="${T}" r="4.5" fill="#4dabf7"/>`;}
-  if(b.top==='hat'){front+=`<rect x="58" y="${T-6}" width="84" height="12" rx="6" fill="#1f2a44"/><rect x="72" y="${T-46}" width="56" height="44" rx="6" fill="#1f2a44"/><rect x="72" y="${T-16}" width="56" height="9" fill="#ff5a4f"/>`;}
+  const tops=[].concat(b.top||[]), decos=[].concat(b.deco||[]), has=t=>tops.indexOf(t)>=0, deco=t=>decos.indexOf(t)>=0;
+  let back='', front='', skin='', after='';
+  if(has('wings')){[1,-1].forEach(k=>{const X=x=>k>0?x:200-x;
+    back+=`<path d="M${X(48)} 122 L${X(6)} 40 Q${X(16)} 66 ${X(4)} 84 Q${X(22)} 82 ${X(22)} 100 Q${X(36)} 96 ${X(42)} 116Z" fill="${d}" stroke="${d}" stroke-width="4" stroke-linejoin="round"/>`;});}
+  if(has('flame')){back+=`<path d="M66 ${T+22} Q52 ${T-14} 74 ${T-40} Q80 ${T-16} 90 ${T-12} Q88 ${T-42} 100 ${T-60} Q112 ${T-42} 110 ${T-12} Q120 ${T-16} 126 ${T-40} Q148 ${T-14} 134 ${T+22}Z" fill="#ffb703" stroke="#e85d04" stroke-width="4" stroke-linejoin="round"/><path d="M84 ${T+16} Q80 ${T-6} 92 ${T-22} Q96 ${T-6} 100 ${T-36} Q104 ${T-6} 108 ${T-22} Q120 ${T-6} 116 ${T+16}Z" fill="#ffe066"/>`;}
+  if(has('spikes')||b.spikes){const sc=b.spikeColor||d;[[62,14],[81,6],[100,2],[119,6],[138,14]].forEach(p=>{const x=p[0],o=p[1];back+=`<path d="M${x-12} ${T+o+14} L${x} ${T+o-24} L${x+12} ${T+o+14}Z" fill="${sc}" stroke="${d}" stroke-width="3" stroke-linejoin="round"/>`;});}
+  if(has('horns')){back+=`<path d="M66 ${T+20} Q48 ${T-8} 56 ${T-34} Q70 ${T-6} 86 ${T+8}Z" fill="#fff4d6" stroke="${d}" stroke-width="4"/><path d="M134 ${T+20} Q152 ${T-8} 144 ${T-34} Q130 ${T-6} 114 ${T+8}Z" fill="#fff4d6" stroke="${d}" stroke-width="4"/>`;}
+  if(has('ears')){back+=`<path d="M52 ${T+40} L44 ${T-22} L92 ${T+10}Z" fill="${c}" stroke="${d}" stroke-width="4" stroke-linejoin="round"/><path d="M148 ${T+40} L156 ${T-22} L108 ${T+10}Z" fill="${c}" stroke="${d}" stroke-width="4" stroke-linejoin="round"/><path d="M58 ${T+26} L54 ${T-6} L80 ${T+12}Z" fill="#ffb3c7"/><path d="M142 ${T+26} L146 ${T-6} L120 ${T+12}Z" fill="#ffb3c7"/>`;}
+  if(has('antenna')){back+=`<line x1="100" y1="${T+4}" x2="100" y2="${T-26}" stroke="${d}" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="${T-32}" r="10" fill="#ff5a4f" stroke="${d}" stroke-width="4"/>`;}
+  if(has('antennae')){[[84,64],[116,136]].forEach(p=>{back+=`<path d="M${p[0]} ${T+6} Q${(p[0]+p[1])/2} ${T-12} ${p[1]} ${T-26}" fill="none" stroke="${d}" stroke-width="5" stroke-linecap="round"/><circle cx="${p[1]}" cy="${T-30}" r="9" fill="#ffd23f" stroke="${d}" stroke-width="4"/>`;});}
+  if(has('sprout')){back+=`<path d="M100 ${T+6} L100 ${T-20}" stroke="#2f9e44" stroke-width="5" stroke-linecap="round"/><path d="M100 ${T-16} Q84 ${T-38} 70 ${T-26} Q86 ${T-12} 100 ${T-16}Z" fill="#51cf66" stroke="#2f9e44" stroke-width="3"/><path d="M100 ${T-20} Q118 ${T-44} 132 ${T-30} Q116 ${T-14} 100 ${T-20}Z" fill="#51cf66" stroke="#2f9e44" stroke-width="3"/>`;}
+  if(has('crown')){front+=`<path d="M62 ${T+10} L62 ${T-24} L80 ${T-8} L100 ${T-32} L120 ${T-8} L138 ${T-24} L138 ${T+10}Z" fill="#ffcc00" stroke="#a87b00" stroke-width="4" stroke-linejoin="round"/><circle cx="100" cy="${T-4}" r="6" fill="#ff4d6d"/><circle cx="76" cy="${T}" r="4.5" fill="#4dabf7"/><circle cx="124" cy="${T}" r="4.5" fill="#4dabf7"/>`;}
+  if(has('hat')){front+=`<rect x="58" y="${T-6}" width="84" height="12" rx="6" fill="#1f2a44"/><rect x="72" y="${T-46}" width="56" height="44" rx="6" fill="#1f2a44"/><rect x="72" y="${T-16}" width="56" height="9" fill="#ff5a4f"/>`;}
+  if(has('helmet')){front+=`<path d="M100 ${T-22} L100 ${T-38}" stroke="#495057" stroke-width="6" stroke-linecap="round"/><circle cx="100" cy="${T-40}" r="7" fill="#ffd23f" stroke="#495057" stroke-width="3"/><path d="M44 ${T+22} Q44 ${T-22} 100 ${T-24} Q156 ${T-22} 156 ${T+22}Z" fill="#adb5bd" stroke="#495057" stroke-width="4" stroke-linejoin="round"/><rect x="38" y="${T+14}" width="124" height="14" rx="7" fill="#868e96" stroke="#495057" stroke-width="4"/>`+
+    [60,80,100,120,140].map(x=>`<circle cx="${x}" cy="${T+21}" r="3.2" fill="#495057"/>`).join('');}
+  if(has('gnome')){front+=`<path d="M44 ${T+20} Q100 ${T-2} 156 ${T+20} L114 ${T-48} Q104 ${T-64} 92 ${T-56}Z" fill="#e03131" stroke="#a51111" stroke-width="4" stroke-linejoin="round"/><circle cx="90" cy="${T-58}" r="8" fill="#fff" stroke="#ced4da" stroke-width="3"/><path d="M40 ${T+20} Q100 ${T+2} 160 ${T+20} Q100 ${T+34} 40 ${T+20}Z" fill="#fff" stroke="#ced4da" stroke-width="3"/>`;}
+  if(has('jester')){front+=`<path d="M52 ${T+20} Q50 ${T-8} 28 ${T-30} Q70 ${T-28} 100 ${T+2} Q130 ${T-28} 172 ${T-30} Q150 ${T-8} 148 ${T+20} Q100 ${T+8} 52 ${T+20}Z" fill="#7048e8" stroke="#432874" stroke-width="4" stroke-linejoin="round"/><path d="M100 ${T+2} Q130 ${T-28} 172 ${T-30} Q150 ${T-8} 148 ${T+20} Q124 ${T+12} 100 ${T+10}Z" fill="#e8590c" stroke="#432874" stroke-width="4" stroke-linejoin="round"/><circle cx="28" cy="${T-30}" r="8" fill="#ffd43b" stroke="#a87b00" stroke-width="3"/><circle cx="172" cy="${T-30}" r="8" fill="#ffd43b" stroke="#a87b00" stroke-width="3"/>`;}
+  if(has('pirate')){front+=`<path d="M38 ${T+18} Q100 ${T-6} 162 ${T+18} Q152 ${T-14} 130 ${T-22} Q100 ${T-42} 70 ${T-22} Q48 ${T-14} 38 ${T+18}Z" fill="#212529" stroke="#000" stroke-width="3" stroke-linejoin="round"/><path d="M50 ${T+10} Q100 ${T-10} 150 ${T+10}" fill="none" stroke="#fcc419" stroke-width="4"/><circle cx="100" cy="${T-14}" r="7" fill="#fff"/><path d="M92 ${T-4} L108 ${T-24} M108 ${T-4} L92 ${T-24}" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;}
+  if(deco('dots')){[[44,118],[156,118],[58,156],[142,156],[100,S.eye-34]].forEach(p=>{skin+=`<circle cx="${p[0]}" cy="${p[1]}" r="6.5" fill="${l}" opacity=".75"/>`;});}
+  if(deco('stripes')){[60,84,108].forEach(y=>{skin+=`<path d="M${42} ${y+40} Q56 ${y+36} 60 ${y+48}" fill="none" stroke="${d}" stroke-width="5" stroke-linecap="round" opacity=".55"/><path d="M${158} ${y+40} Q144 ${y+36} 140 ${y+48}" fill="none" stroke="${d}" stroke-width="5" stroke-linecap="round" opacity=".55"/>`;});}
   const n=b.eyes||2; const xs=n===1?[100]:n===2?[74,126]:[64,100,136]; const r=n===1?28:n===2?20:16;
   let eyes='';
   xs.forEach((x,i)=>{const y=S.eye-(n===3&&i===1?10:0);
@@ -687,18 +1018,22 @@ function bossSVG(b,friendly){
     if(!friendly){const yb=y-r-6; let y1=yb-6,y2=yb+4; if(x>100){y1=yb+4;y2=yb-6;} if(x===100&&n>1){y1=yb;y2=yb;} if(n===1){y1=yb+2;y2=yb+2;}
       eyes+=`<path d="M${x-r-2} ${y1} L${x+r+2} ${y2}" stroke="#1f2a44" stroke-width="6" stroke-linecap="round"/>`;}
   });
+  if(deco('patch')){const x=xs[0], y=S.eye; eyes+=`<path d="M${x-30} ${y-24} L${x+60} ${y-34}" stroke="#212529" stroke-width="4"/><ellipse cx="${x}" cy="${y+1}" rx="${r+4}" ry="${r+2}" fill="#212529"/>`;}
   const M=S.mouth;
+  const beard=deco('beard')?`<path d="M56 ${M+2} Q56 ${M+48} 100 ${M+54} Q144 ${M+48} 144 ${M+2} Q122 ${M+16} 100 ${M+14} Q78 ${M+16} 56 ${M+2}Z" fill="#fff" stroke="#ced4da" stroke-width="3"/>`:'';
   const mouth=friendly?`<path d="M72 ${M} Q100 ${M+30} 128 ${M}" fill="none" stroke="#1f2a44" stroke-width="6" stroke-linecap="round"/><circle cx="56" cy="${M-8}" r="9" fill="#ff9fb5" opacity=".7"/><circle cx="144" cy="${M-8}" r="9" fill="#ff9fb5" opacity=".7"/>`
    :`<path d="M64 ${M} Q100 ${M+42} 136 ${M} Q100 ${M+12} 64 ${M}Z" fill="#7a1530" stroke="#1f2a44" stroke-width="4" stroke-linejoin="round"/><path d="M76 ${M+5} L82 ${M+18} L88 ${M+7}Z M112 ${M+7} L118 ${M+18} L124 ${M+5}Z" fill="#fff"/>`;
+  if(!friendly&&deco('teeth')) after+=`<path d="M91 ${M+11} L95 ${M+22} L99 ${M+12}Z M101 ${M+12} L105 ${M+22} L109 ${M+11}Z" fill="#fff"/>`;
+  if(!friendly&&deco('tongue')) after+=`<path d="M100 ${M+22} L100 ${M+40} M100 ${M+40} L92 ${M+50} M100 ${M+40} L108 ${M+50}" fill="none" stroke="#e03131" stroke-width="5" stroke-linecap="round"/>`;
   return `<svg viewBox="0 -45 200 245" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(b.name||'monster')}">
     <ellipse cx="100" cy="192" rx="70" ry="9" fill="rgba(31,42,68,.18)"/>
     ${back}
     <ellipse class="arm-l" cx="22" cy="128" rx="14" ry="26" fill="${c}" stroke="${d}" stroke-width="4"/>
     <ellipse class="arm-r" cx="178" cy="128" rx="14" ry="26" fill="${c}" stroke="${d}" stroke-width="4"/>
-    <ellipse cx="70" cy="186" rx="22" ry="11" fill="${d}"/><ellipse cx="130" cy="186" rx="22" ry="11" fill="${d}"/>
+    ${S.nofeet?'':`<ellipse cx="70" cy="186" rx="22" ry="11" fill="${d}"/><ellipse cx="130" cy="186" rx="22" ry="11" fill="${d}"/>`}
     <path d="${S.path}" fill="${c}" stroke="${d}" stroke-width="5"/>
     <ellipse cx="100" cy="${M+22}" rx="46" ry="24" fill="${l}" opacity=".75"/>
-    ${eyes}${mouth}${front}
+    ${skin}${eyes}${beard}${mouth}${after}${front}
   </svg>`;
 }
 
@@ -709,6 +1044,7 @@ function show(id){
   $('#toast').classList.remove('show');
   window.scrollTo(0,0);
   if(id==='map') renderMap();
+  if(id==='levels') renderLevels();
   if(id==='parent') renderParent();
 }
 document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g){SFX.click();Speech.stop();show(g.dataset.go);}});
@@ -717,6 +1053,19 @@ $$('.sfx-toggle').forEach(b=>b.addEventListener('click',()=>{state.muted=!state.
 /* ---------- Start ---------- */
 $('#mascot').innerHTML=bossSVG({name:'Pim',color:'#ffd23f',dark:'#c99a00',light:'#fff3c4',shape:'round',eyes:2,top:'antenna'},true);
 $('#btn-start').addEventListener('click',()=>{SFX.ensure();SFX.click();Speech.speak(['Hoi! Daar gaan we!']);show('map');});
+
+/* Opnieuw beginnen (met bevestiging) */
+$('#btn-reset-home').addEventListener('click',()=>{
+  SFX.click();
+  if(!hasProgress()&&!state.custom.length){toast('Je bent al helemaal bij het begin! 🙂');return;}
+  const n=state.custom.length;
+  modal('<b>Weet je het zeker?</b><br>Al je sterren en levels worden gewist. 🧹'+
+    (n?`<label class="check"><input type="checkbox" id="reset-keep" checked> Eigen woorden bewaren (${n} ${n===1?'woord':'woorden'})</label>`:'')+
+    '<small>Dit kan niet ongedaan worden gemaakt.</small>',[
+    {label:'Nee',cls:'green'},
+    {label:'Ja, wissen',cls:'orange',fn:()=>{const k=$('#reset-keep');const keep=k?k.checked:true;
+      resetProgress(keep);SFX.unlock();toast(keep?'Alles is gewist. Veel plezier met opnieuw beginnen! 🚀':'Alles is gewist, ook de eigen woorden. Veel plezier! 🚀',3200);}}]);
+});
 
 /* Ouder-poort: 2 seconden vasthouden */
 (function(){
@@ -738,32 +1087,97 @@ function customLevel(){
     options:4, intro:'<p>Deze woorden zijn speciaal voor jou uitgekozen! ✏️</p><p>Luister goed, kies het goede woord en lees na elke vraag de uitleg.</p>',
     boss:CUSTOM_BOSS, words:state.custom.map(c=>({w:c.w,s:c.s,f:fillWrong(c.w,c.f),u:c.u||autoUitleg(c.w),e:c.e||autoEzel(c.w)}))};
 }
+function fogHTML(title,sub){
+  const puffs=[[-8,8,46,-140,-60],[30,-6,52,0,-150],[62,10,48,150,-70],[-6,52,50,-160,60],[34,46,58,10,150],[66,54,46,160,70],[18,24,60,-60,-20]];
+  return `<span class="fog" aria-hidden="true">${puffs.map((p,i)=>`<i style="--x:${p[0]}%;--y:${p[1]}%;--s:${p[2]}%;--fx:${p[3]}px;--fy:${p[4]}px;--d:${-i*0.7}s"></i>`).join('')}`+
+    `<span class="fog-q">?</span>${title?`<span class="fog-t">${title}</span>`:''}${sub?`<span class="fog-s">${sub}</span>`:''}</span>`;
+}
 function renderMap(){
-  const path=$('#path'); let h=''; let total=0;
-  LEVELS.forEach(L=>{
-    const st=state.stars[L.id]||0; total+=st; const locked=L.id>state.unlocked; const current=L.id===state.unlocked&&!st;
+  let h='<div class="islands">', total=0, max=0; const reveal=[];
+  let hereId=WORLDS[0].id; WORLDS.forEach(Wd=>{if(worldUnlocked(Wd))hereId=Wd.id;});
+  WORLDS.forEach((Wd,i)=>{
+    const st=worldStars(Wd), mx=Wd.levels.length*3; total+=st; max+=mx;
+    const side=i%2?'right':'left';
+    if(i>0) h+=`<div class="route${worldUnlocked(Wd)?'':' foggy'}" aria-hidden="true"></div>`;
+    if(worldUnlocked(Wd)){
+      const fresh=state.revealed.indexOf(Wd.id)<0, done=worldDone(Wd), here=Wd.id===hereId&&!done;
+      if(fresh) reveal.push(Wd.id);
+      h+=`<button class="island ${side}${here?' here':''}" data-world="${Wd.id}" style="--land:${Wd.land};--sand:${Wd.sand||'#f6dc9b'}" aria-label="Wereld ${Wd.id}: ${esc(Wd.name)}, ${st} van de ${mx} sterren">
+        ${here?'<span class="pin">📍 Jij bent hier</span>':''}
+        <span class="scenery" aria-hidden="true">${Wd.scenery}</span>
+        <span class="iname">${Wd.icon} Wereld ${Wd.id} · ${esc(Wd.name)}</span>
+        <span class="iprog">⭐ ${st}/${mx} · ${done?'👑 Uitgespeeld!':`Level ${wprog(Wd.id).unlocked} van ${Wd.levels.length}`}</span>
+        ${fresh?fogHTML('Wereld '+Wd.id,''):''}</button>`;
+    } else {
+      const prev=WORLDS[i-1];
+      h+=`<button class="island locked ${side}" data-world="${Wd.id}" aria-label="Wereld ${Wd.id}: nog verborgen in de mist">
+        <span class="scenery" aria-hidden="true">${Wd.scenery}</span><span class="iname">Wereld ${Wd.id} · ???</span><span class="iprog">🔒</span>
+        ${fogHTML('Wereld '+Wd.id+' ligt in de mist',`Speel alle levels van Wereld ${prev.id} uit om de mist weg te blazen!`)}</button>`;
+    }
+  });
+  h+=`<div class="route foggy" aria-hidden="true"></div>
+    <button class="island teaser ${WORLDS.length%2?'right':'left'}" data-world="soon" aria-label="Binnenkort meer werelden">
+      <span class="scenery" aria-hidden="true">🏔️</span>${fogHTML('Binnenkort meer!','')}</button>`;
+  if(state.custom.length>=3){const st=state.customStars;
+    h+=`<button class="island mini" data-world="custom" aria-label="Eigen woorden, ${st} sterren">
+      <span class="scenery" aria-hidden="true">✏️</span><span class="iname">Eigen woorden</span>
+      <span class="iprog">${state.custom.length} woorden · ${starsHTML(st)}</span></button>`;}
+  h+='</div>';
+  $('#sea').innerHTML=h; $('#starcount').textContent=`⭐ ${total} / ${max}`;
+  if(reveal.length){reveal.forEach(id=>state.revealed.push(id));saveState();setTimeout(()=>clearFog(reveal[0]),450);}
+}
+function clearFog(id){
+  const isl=$(`.island[data-world="${id}"]`), fog=isl&&isl.querySelector('.fog');
+  if(!fog||!$('#scr-map').classList.contains('active')) return;
+  try{isl.scrollIntoView({block:'center',behavior:reduceMotion?'auto':'smooth'});}catch(e){isl.scrollIntoView();}
+  setTimeout(()=>{
+    fog.classList.add('clearing'); SFX.noise(.9,.06); SFX.unlock();
+    const Wd=worldById(id); toast(`🌫️ De mist trekt op… ${Wd.icon} Wereld ${id} is ontdekt!`,3500);
+    for(let i=0;i<12;i++){const sp=document.createElement('span');sp.className='spark';sp.textContent=pick(['✨','⭐','🌟']);
+      const ang=Math.random()*Math.PI*2, dist=60+Math.random()*90; sp.style.setProperty('--dx',Math.cos(ang)*dist+'px');sp.style.setProperty('--dy',Math.sin(ang)*dist+'px');
+      sp.style.left='50%';sp.style.top='50%';sp.style.animationDelay=(i*0.06)+'s';isl.appendChild(sp);setTimeout(()=>sp.remove(),1600);}
+    setTimeout(()=>{fog.remove();isl.classList.add('here');},2500);
+  },reduceMotion?50:650);
+}
+$('#sea').addEventListener('click',e=>{
+  const n=e.target.closest('.island'); if(!n) return; const id=n.dataset.world;
+  const nope=msg=>{n.classList.remove('wiggle');void n.offsetWidth;n.classList.add('wiggle');SFX.wrong();toast(msg,2600);};
+  if(id==='custom'){SFX.click();openIntro(customLevel());return;}
+  if(id==='soon'){nope('🌫️ Hier komen binnenkort nieuwe werelden!');return;}
+  const Wd=worldById(+id); if(!Wd) return;
+  if(!worldUnlocked(Wd)){const p=WORLDS[WORLDS.indexOf(Wd)-1];nope(`🌫️ Speel eerst alle levels van Wereld ${p.id} uit!`);return;}
+  SFX.click(); openWorld(Wd.id);
+});
+
+/* ---------- Levels van één wereld ---------- */
+let curWorld=WORLDS[0].id;
+function openWorld(id){curWorld=id;show('levels');}
+function renderLevels(){
+  const Wd=worldById(curWorld)||WORLDS[0], P=wprog(Wd.id); let h='';
+  $('#levels-title').textContent=`${Wd.icon} Wereld ${Wd.id} · ${Wd.name}`;
+  Wd.levels.forEach(L=>{
+    const st=P.stars[L.id]||0; const locked=L.id>P.unlocked; const current=L.id===P.unlocked&&!st;
     h+=`<button class="node${locked?' locked':''}${current?' current':''}" data-level="${L.id}" aria-label="Level ${L.id}: ${esc(L.title)}${locked?', op slot':', '+st+' sterren'}">
       <span class="num" style="background:${L.color}">${locked?'🔒':L.icon}</span>
       <span class="info"><span class="lt">${L.id}. ${esc(L.title)}</span><br><span class="ls">${esc(L.sub)}</span><br><span class="stars">${starsHTML(st)}</span></span></button>`;
   });
-  if(state.custom.length>=3){const st=state.stars.custom||0;
-    h+=`<button class="node" data-level="custom" aria-label="Eigen woorden, ${st} sterren"><span class="num" style="background:#0f7d5c">✏️</span>
-      <span class="info"><span class="lt">Eigen woorden</span><br><span class="ls">${state.custom.length} woorden van thuis</span><br><span class="stars">${starsHTML(st)}</span></span></button>`;}
-  path.innerHTML=h; $('#starcount').textContent=`⭐ ${total} / ${LEVELS.length*3}`;
+  $('#path').innerHTML=h; $('#wstarcount').textContent=`⭐ ${worldStars(Wd)} / ${Wd.levels.length*3}`;
 }
 $('#path').addEventListener('click',e=>{
-  const n=e.target.closest('.node'); if(!n) return; const id=n.dataset.level;
-  if(id==='custom'){SFX.click();openIntro(customLevel());return;}
-  const L=LEVELS.find(x=>String(x.id)===id); if(!L) return;
-  if(L.id>state.unlocked){n.classList.remove('wiggle');void n.offsetWidth;n.classList.add('wiggle');SFX.wrong();toast(`🔒 Versla eerst de baas van level ${L.id-1}!`);return;}
+  const n=e.target.closest('.node'); if(!n) return;
+  const Wd=worldById(curWorld); const L=Wd&&Wd.levels.find(x=>String(x.id)===n.dataset.level); if(!L) return;
+  if(L.id>wprog(Wd.id).unlocked){n.classList.remove('wiggle');void n.offsetWidth;n.classList.add('wiggle');SFX.wrong();toast(`🔒 Versla eerst de baas van level ${L.id-1}!`);return;}
   SFX.click(); openIntro(L);
 });
+function backToMap(){if(G&&G.lvl&&G.lvl.world)openWorld(G.lvl.world); else show('map');}
+$('#btn-intro-back').addEventListener('click',()=>{SFX.click();Speech.stop();backToMap();});
+$('#btn-win-map').addEventListener('click',()=>{SFX.click();Speech.stop();backToMap();});
 
 /* ---------- Intro ---------- */
 let G=null;
 function openIntro(L){
   G={lvl:L};
-  $('#intro-title').textContent=(L.id==='custom'?'':'Level '+L.id+' · ')+L.title;
+  $('#intro-title').textContent=(L.id==='custom'?'':levelLabel(L)+' · ')+L.title;
   $('#intro-icon').textContent=L.icon; $('#intro-h').textContent=L.title; $('#intro-text').innerHTML=L.intro;
   show('intro');
 }
@@ -773,7 +1187,7 @@ $('#btn-begin').addEventListener('click',()=>{SFX.click();startLevel(G.lvl);});
 function startLevel(L){
   const picked=shuffle(L.words).slice(0,Math.min(8,L.words.length)).map((w,i)=>Object.assign({},w,{_id:i}));
   G={lvl:L,queue:picked,total:picked.length,done:0,firstTry:{},requeues:{},correctFirst:0,current:null,answered:false};
-  $('#quiz-title').textContent=(L.id==='custom'?'✏️ ':'Level '+L.id+' · ')+L.title;
+  $('#quiz-title').textContent=levelLabel(L)+(L.id==='custom'?' ':' · ')+L.title;
   show('quiz'); nextQuestion();
 }
 function makeOptions(item,n){
@@ -829,7 +1243,7 @@ $('#fb-say').addEventListener('click',()=>{if(G&&G.current)Speech.speak([G.curre
 $('#btn-nextq').addEventListener('click',()=>{SFX.click();nextQuestion();});
 $('#btn-quit').addEventListener('click',()=>{SFX.click();
   modal('Wil je stoppen met dit level? 🤔<br><small>Je begint dan de volgende keer opnieuw.</small>',[
-    {label:'Doorgaan',cls:'green'},{label:'Stoppen',cls:'white',fn:()=>{Speech.stop();show('map');}}]);});
+    {label:'Doorgaan',cls:'green'},{label:'Stoppen',cls:'white',fn:()=>{Speech.stop();backToMap();}}]);});
 document.addEventListener('keydown',e=>{
   if($('#modal').classList.contains('show')) return;
   if(!$('#scr-quiz').classList.contains('active')||e.target.matches('input,textarea,select')) return;
@@ -843,67 +1257,128 @@ function bossIntro(){
   Speech.stop();
   const L=G.lvl, b=L.boss; G.stars=starsFor(G.correctFirst,G.total);
   G.dmgBase=Math.round(5+12*(G.correctFirst/G.total));
-  $('#bi-title').textContent='Pas op! '+b.name+' komt eraan!';
+  $('#scr-bossintro').classList.toggle('final',!!b.final);
+  $('#bi-title').textContent=b.final?'🔥 '+b.name+' 🔥':'Pas op! '+b.name+' komt eraan!';
   $('#bi-taunt').textContent=pick(b.taunts);
   $('#bi-boss').innerHTML=bossSVG(b);
   $('#bi-score').innerHTML=`Je had <b>${G.correctFirst} van de ${G.total}</b> woorden in één keer goed!`;
-  $('#bi-power').innerHTML=`Jouw kracht: ${starsHTML(G.stars)}<br><small>${G.dmgBase} schade per tik</small>`;
+  $('#bi-power').innerHTML=`Jouw kracht: ${starsHTML(G.stars)}<br><small>${G.dmgBase} schade per tik</small>`+
+    ((b.hp||100)>100?`<br><small>Deze baas is extra sterk: ❤️ ${b.hp}</small>`:'')+
+    (b.twistHint?`<div class="twist-hint">💡 ${esc(b.twistHint)}</div>`:'');
   show('bossintro'); setTimeout(()=>SFX.roar(),200);
 }
 $('#btn-fight').addEventListener('click',()=>{SFX.click();startFight();});
+/* Baas-trucjes (wereld 2+). De baas kan nooit winnen: schild en onzichtbaar duren maar even,
+   worden alleen door levenspunten (niet door tijd) gestart, en daarna gaat het tikken gewoon door. */
+const hasTwist=t=>!!(G&&G.lvl&&G.lvl.boss.twists&&G.lvl.boss.twists.indexOf(t)>=0);
+function stopBossTimers(){if(!G)return;clearInterval(G.moveT);clearTimeout(G.guardT);G.moveT=0;G.guardT=0;}
 function startFight(){
-  const b=G.lvl.boss; G.hp=100; G.fighting=true; G.saidMid=false; G.taps=0;
+  const b=G.lvl.boss; stopBossTimers();
+  G.maxHp=b.hp||100; G.hp=G.maxHp; G.fighting=true; G.saidMid=false; G.taps=0;
+  G.guard=null; G.split=false; G.raged=false; G.bx=0; G.by=0; G.bs=1;
+  const guards=hasTwist('shield')?(b.final?[0.75,0.4]:[0.66,0.33]):hasTwist('ghost')?[0.6,0.3]:[];
+  G.guards=guards.map(at=>({at,type:hasTwist('shield')?'shield':'ghost',done:false}));
+  if(hasTwist('shield')&&hasTwist('ghost')) G.guards=[{at:0.66,type:'shield',done:false},{at:0.33,type:'ghost',done:false}];
   $('#boss-label').textContent='👾 '+b.name; $('#boss-svg').innerHTML=bossSVG(b);
-  $('#bossbtn').classList.remove('defeated','hit'); updateHP();
+  $('#boss-shield').textContent=b.shieldIcon||'🛡️';
+  const btn=$('#bossbtn'); btn.classList.remove('defeated','hit','shielded','ghosted');
+  btn.classList.toggle('mover',hasTwist('move')||hasTwist('rage')); btn.style.transform='';
+  $('#arena').classList.toggle('final',!!b.final); $('#arena').classList.remove('rage');
+  updateHP();
   $('#boss-power-hint').innerHTML=`Jouw kracht: ${starsHTML(G.stars)}`;
   $('#tap-hint').textContent='👆 Tik zo snel als je kunt op de baas!';
   show('boss'); bossSay(pick(b.taunts),2200);
+  if(hasTwist('move')) startMoving();
 }
-function updateHP(){$('#hpfill').style.width=Math.max(0,G.hp)+'%';$('#hp-num').textContent='❤️ '+Math.max(0,Math.ceil(G.hp));}
+function updateHP(){const p=Math.max(0,G.hp)/(G.maxHp||100)*100;$('#hpfill').style.width=p+'%';$('#hp-num').textContent='❤️ '+Math.max(0,Math.ceil(G.hp));}
 function bossSay(t,ms){const el=$('#boss-bubble');el.textContent=t;el.classList.add('show');clearTimeout(bossSay._t);bossSay._t=setTimeout(()=>el.classList.remove('show'),ms||1800);}
+function applyBossTransform(){$('#bossbtn').style.transform=(G.bx||G.by||G.bs!==1)?`translate(${G.bx}px,${G.by}px) scale(${G.bs})`:'';}
+function startMoving(){
+  if(reduceMotion||G.moveT) return;
+  G.moveT=setInterval(()=>{
+    if(!G.fighting){stopBossTimers();return;}
+    const arena=$('#arena').getBoundingClientRect(), btn=$('#bossbtn'), w=btn.offsetWidth*G.bs;
+    const maxX=Math.max(0,(arena.width-w)/2-8); let x=G.bx;
+    for(let i=0;i<5&&Math.abs(x-G.bx)<maxX*0.5;i++) x=(Math.random()*2-1)*maxX;
+    G.bx=Math.round(x); G.by=Math.round(Math.random()*24-12); applyBossTransform();
+  },G.lvl.boss.final?1300:1600);
+}
+function startGuard(type){
+  const btn=$('#bossbtn'); G.guard=type; SFX.unlock();
+  btn.classList.add(type==='shield'?'shielded':'ghosted');
+  $('#tap-hint').textContent=type==='shield'?`${G.lvl.boss.shieldIcon||'🛡️'} Schild! Wacht even…`:'👻 Hij is onzichtbaar! Wacht even…';
+  bossSay(type==='shield'?'Hahaha! Mijn schild beschermt mij!':'Woesh! Waar ben ik? Hihi!',1500);
+  G.guardT=setTimeout(()=>{
+    G.guard=null; G.guardT=0; btn.classList.remove('shielded','ghosted');
+    if(G.fighting){$('#tap-hint').textContent='👆 Nu weer tikken!';SFX.click();}
+  },G.lvl.boss.final?1700:1500);
+}
+function floatText(cls,text,px,py){
+  const arena=$('#arena'), r=arena.getBoundingClientRect();
+  const d=document.createElement('div'); d.className=cls; d.textContent=text;
+  d.style.left=Math.min(r.width-60,Math.max(60,px))+'px'; d.style.top=py+'px'; arena.appendChild(d); setTimeout(()=>d.remove(),950);
+}
 function hitBoss(x,y){
   if(!G||!G.fighting) return;
+  const arena=$('#arena'), r=arena.getBoundingClientRect();
+  const px=x-r.left, py=y-r.top;
+  if(G.guard){SFX.tone(1300,.06,'triangle',.08);floatText('tink',G.guard==='shield'?'Tink!':'Woesh!',px,py);return;}
   G.taps++;
   const crit=Math.random()<0.12; const dmg=Math.max(1,Math.round(G.dmgBase*(0.85+Math.random()*0.3)*(crit?2:1)));
   G.hp-=dmg; updateHP(); SFX.hit(crit);
   const btn=$('#bossbtn'); btn.classList.remove('hit'); void btn.offsetWidth; btn.classList.add('hit');
   if(!reduceMotion){const a=$('#app');a.classList.remove('shake');void a.offsetWidth;a.classList.add('shake');}
   if(navigator.vibrate){try{navigator.vibrate(crit?40:15);}catch(e){}}
-  const arena=$('#arena'), r=arena.getBoundingClientRect();
-  const px=x-r.left, py=y-r.top;
-  const d=document.createElement('div'); d.className='dmg'+(crit?' crit':''); d.textContent=(crit?'SUPER! ':'')+'-'+dmg;
-  d.style.left=Math.min(r.width-60,Math.max(60,px))+'px'; d.style.top=py+'px'; arena.appendChild(d); setTimeout(()=>d.remove(),950);
+  floatText('dmg'+(crit?' crit':''),(crit?'SUPER! ':'')+'-'+dmg,px,py);
   for(let i=0;i<(crit?8:4);i++){const s=document.createElement('span');s.className='spark';s.textContent=pick(['⭐','✨','💥']);
     const ang=Math.random()*Math.PI*2, dist=50+Math.random()*60; s.style.setProperty('--dx',Math.cos(ang)*dist+'px');s.style.setProperty('--dy',Math.sin(ang)*dist+'px');
     s.style.left=px+'px';s.style.top=py+'px';arena.appendChild(s);setTimeout(()=>s.remove(),750);}
-  if(!G.saidMid&&G.hp<=50){G.saidMid=true;bossSay(G.lvl.boss.mid);}
-  if(G.hp<=0) defeatBoss();
+  if(G.hp<=0){defeatBoss();return;}
+  const frac=G.hp/G.maxHp, b=G.lvl.boss;
+  if(hasTwist('shrink')){G.bs=+(0.62+0.38*frac).toFixed(3);applyBossTransform();}
+  if(hasTwist('split')&&!G.split&&frac<=0.5){G.split=true;G.saidMid=true;
+    $('#boss-svg').innerHTML=`<div class="twins">${bossSVG(b)}${bossSVG(b)}</div>`;bossSay(b.mid,2000);SFX.roar();}
+  if(hasTwist('rage')&&!G.raged&&frac<=0.5){G.raged=true;G.saidMid=true;
+    $('#arena').classList.add('rage');bossSay(b.rageSay||b.mid,2200);SFX.roar();startMoving();}
+  const g=G.guards.find(q=>!q.done&&frac<=q.at);
+  if(g){G.guards.forEach(q=>{if(frac<=q.at)q.done=true;});startGuard(g.type);return;}
+  if(!G.saidMid&&frac<=0.5){G.saidMid=true;bossSay(b.mid);}
 }
 $('#bossbtn').addEventListener('pointerdown',e=>{e.preventDefault();hitBoss(e.clientX,e.clientY);});
 $('#bossbtn').addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();const r=$('#bossbtn').getBoundingClientRect();hitBoss(r.left+r.width*(0.3+Math.random()*0.4),r.top+r.height*(0.3+Math.random()*0.4));}});
 function defeatBoss(){
-  G.fighting=false; const b=G.lvl.boss; bossSay(b.lose,2600); $('#tap-hint').textContent='🎉 Je hebt gewonnen!';
-  setTimeout(()=>{$('#bossbtn').classList.add('defeated');SFX.roar();},500);
-  setTimeout(winScreen,1900);
+  G.fighting=false; stopBossTimers(); G.guard=null;
+  const b=G.lvl.boss, btn=$('#bossbtn'); btn.classList.remove('shielded','ghosted');
+  bossSay(b.lose,2600); $('#tap-hint').textContent='🎉 Je hebt gewonnen!';
+  setTimeout(()=>{btn.classList.add('defeated');SFX.roar();},500);
+  setTimeout(winScreen,b.final?2400:1900);
 }
 function winScreen(){
-  const L=G.lvl; let unlockedNew=null;
-  const prev=state.stars[L.id]||0; state.stars[L.id]=Math.max(prev,G.stars);
-  if(L.id!=='custom'&&L.id===state.unlocked&&L.id<LEVELS.length){state.unlocked=L.id+1;unlockedNew=LEVELS[L.id];}
+  const L=G.lvl, custom=L.id==='custom'; let msg=null, next=null; G.nextIsMap=false;
+  const prev=levelStars(L); setLevelStars(L,Math.max(prev,G.stars));
+  if(!custom){
+    const Wd=worldById(L.world), P=wprog(Wd.id), last=L.id>=Wd.levels.length;
+    if(L.id===P.unlocked&&!last){P.unlocked=L.id+1;msg=`🔓 Level ${L.id+1} is open: ${Wd.levels[L.id].title}`;}
+    if(!last){next=Wd.levels[L.id]; if(next.id>P.unlocked) next=null;}
+    else{
+      const NW=WORLDS[WORLDS.indexOf(Wd)+1];
+      if(NW){G.nextIsMap=true; if(prev===0) msg=`🌫️ De mist trekt op… Je hebt een nieuwe wereld ontdekt: ${NW.icon} Wereld ${NW.id}!`;}
+      else if(prev===0) msg='👑 Je hebt alle werelden uitgespeeld! Wat knap! Binnenkort komen er nieuwe werelden.';
+    }
+  }
   saveState();
   $('#win-stars').innerHTML=[0,1,2].map(i=>`<span class="${i<G.stars?'star-on':'star-off'}">★</span>`).join('');
   $('#win-text').innerHTML=`Je hebt <b>${esc(L.boss.name)}</b> verslagen! 🎉<br>${G.correctFirst} van de ${G.total} woorden in één keer goed.`+
     (G.stars<3?'<br><small>Speel nog een keer voor meer sterren!</small>':'<br><small>Alle sterren! Jij bent een echte spellingheld!</small>');
-  const un=$('#win-unlock');
-  if(unlockedNew){un.hidden=false;un.textContent=`🔓 Level ${unlockedNew.id} is open: ${unlockedNew.title}`;}
-  else if(L.id===LEVELS.length&&prev===0){un.hidden=false;un.textContent='👑 Je hebt alle levels uitgespeeld! Wat knap!';}
-  else un.hidden=true;
-  const next=L.id!=='custom'?LEVELS[L.id]:null; $('#btn-next').hidden=!(next&&next.id<=state.unlocked);
+  const un=$('#win-unlock'); un.hidden=!msg; if(msg) un.textContent=msg;
+  G.next=next;
+  $('#btn-next').hidden=!(next||G.nextIsMap);
+  $('#btn-next').textContent=G.nextIsMap?'🗺️ Naar de wereldkaart':'Volgende level ➜';
   show('win'); SFX.win(); confetti();
   $$('#win-stars span').forEach((s,i)=>setTimeout(()=>{s.classList.add('in');if(i<G.stars)SFX.star(i);},500+i*350));
-  if(unlockedNew) setTimeout(()=>SFX.unlock(),1700);
+  if(msg) setTimeout(()=>SFX.unlock(),1700);
 }
-$('#btn-next').addEventListener('click',()=>{SFX.click();const n=LEVELS[G.lvl.id];if(n)openIntro(n);});
+$('#btn-next').addEventListener('click',()=>{SFX.click();if(G.nextIsMap){show('map');return;}if(G.next)openIntro(G.next);});
 $('#btn-again').addEventListener('click',()=>{SFX.click();openIntro(G.lvl.id==='custom'?customLevel():G.lvl);});
 function confetti(){
   if(reduceMotion) return; const c=document.createElement('div'); c.className='confetti';
@@ -963,8 +1438,9 @@ function renderParent(){
   const ul=$('#wordlist');
   ul.innerHTML=state.custom.length?state.custom.map((c,i)=>`<li><span class="w">${esc(c.w)}</span><span class="s">${esc(c.s)}</span><button data-del="${i}" aria-label="Verwijder ${esc(c.w)}">🗑️</button></li>`).join('')
     :'<li><span class="s">Nog geen eigen woorden. Voeg er minstens 3 toe.</span></li>';
-  const tot=Object.values(state.stars).reduce((a,b)=>a+(+b||0),0);
-  $('#progress-info').textContent=`Open levels: ${state.unlocked} van ${LEVELS.length}. Verdiende sterren: ${tot}. Eigen woorden: ${state.custom.length}.`;
+  const tot=WORLDS.reduce((a,Wd)=>a+worldStars(Wd),0)+state.customStars;
+  $('#progress-info').textContent=WORLDS.map(Wd=>`Wereld ${Wd.id} (${Wd.name}): `+(worldUnlocked(Wd)?(worldDone(Wd)?'uitgespeeld':`level ${wprog(Wd.id).unlocked} van ${Wd.levels.length} open`):'nog in de mist')+'.').join(' ')+
+    ` Verdiende sterren: ${tot}. Eigen woorden: ${state.custom.length}.`;
   $('#rate').value=state.rate; $('#rate-val').textContent=(+state.rate).toFixed(2);
   fillVoiceSelect();
 }
@@ -986,15 +1462,16 @@ $('#wordform').addEventListener('submit',e=>{
 $('#voice-select').addEventListener('change',e=>{state.voiceURI=e.target.value||null;saveState();Speech.pick();updateVoiceNotes();fillVoiceSelect();});
 $('#rate').addEventListener('input',e=>{state.rate=+e.target.value;$('#rate-val').textContent=state.rate.toFixed(2);saveState();});
 $('#btn-testvoice').addEventListener('click',()=>Speech.speak(['wordt','Hij wordt morgen negen jaar.'],state.rate));
-$('#btn-reset').addEventListener('click',()=>modal('Weet u zeker dat u alle <b>voortgang en sterren</b> wilt wissen?<br><small>Eigen woorden blijven bewaard.</small>',[
-  {label:'Annuleren',cls:'white'},{label:'Ja, wissen',cls:'orange',fn:()=>{state.unlocked=1;state.stars={};saveState();renderParent();toast('Voortgang gewist');}}]));
+$('#btn-reset').addEventListener('click',()=>modal('Weet u zeker dat u alle <b>voortgang en sterren</b> (van alle werelden) wilt wissen?<br><small>Eigen woorden blijven bewaard. Dit kan niet ongedaan worden gemaakt.</small>',[
+  {label:'Annuleren',cls:'white'},{label:'Ja, wissen',cls:'orange',fn:()=>{resetProgress(true);renderParent();toast('Voortgang gewist');}}]));
 $('#btn-clearwords').addEventListener('click',()=>modal('Alle eigen woorden wissen?',[
-  {label:'Annuleren',cls:'white'},{label:'Ja, wissen',cls:'orange',fn:()=>{state.custom=[];delete state.stars.custom;saveState();renderParent();toast('Eigen woorden gewist');}}]));
+  {label:'Annuleren',cls:'white'},{label:'Ja, wissen',cls:'orange',fn:()=>{state.custom=[];state.customStars=0;saveState();renderParent();toast('Eigen woorden gewist');}}]));
 
 /* ========================= START ========================= */
 updateSfxButtons(); Speech.init();
 // Klein hulpje voor testen (niet zichtbaar in het spel)
-window.__spellingheld={levels:LEVELS,get state(){return state;},get game(){return G;},answer(){return G&&G.current?G.current.w:null;},genWrong:genWrong};
+window.__spellingheld={worlds:WORLDS,levels:ALL_LEVELS,get state(){return state;},get game(){return G;},answer(){return G&&G.current?G.current.w:null;},genWrong:genWrong,
+  fight(worldId,levelId,correct){const L=worldById(worldId).levels[levelId-1];G={lvl:L,total:8,correctFirst:correct==null?8:correct};bossIntro();}};
 </script>
 </body>
 </html>
