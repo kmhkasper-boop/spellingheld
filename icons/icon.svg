@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512"><clipPath id="rr"><rect width="512" height="512" rx="112"/></clipPath><g clip-path="url(#rr)"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fd3ff"/><stop offset="1" stop-color="#2a8de6"/></linearGradient>
+       <radialGradient id="sun" cx=".5" cy=".42" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+       <rect width="512" height="512" fill="url(#g)"/><circle cx="256" cy="230" r="250" fill="url(#sun)"/>
+       <g fill="#fff" opacity=".9"><ellipse cx="70" cy="420" rx="70" ry="34"/><ellipse cx="130" cy="440" rx="70" ry="38"/><ellipse cx="440" cy="425" rx="80" ry="36"/><ellipse cx="380" cy="448" rx="60" ry="30"/></g><g transform="translate(25.599999999999994 25.599999999999994) scale(0.9)">
+    <!-- cape -->
+    <path d="M150 150 Q120 300 95 400 Q180 370 256 395 Q332 370 417 400 Q392 300 362 150 Z" fill="#e8336d"/>
+    <path d="M150 150 Q120 300 95 400 Q140 385 170 382 Q165 280 190 160 Z" fill="#c21f57"/>
+    <!-- schild -->
+    <path d="M256 70 L405 118 Q412 300 256 445 Q100 300 107 118 Z" fill="#1f2a44" transform="translate(0 10)"/>
+    <path d="M256 70 L405 118 Q412 300 256 445 Q100 300 107 118 Z" fill="#ffd23f" stroke="#1f2a44" stroke-width="14" stroke-linejoin="round"/>
+    <path d="M256 98 L380 138 Q384 292 256 414 Q128 292 132 138 Z" fill="#ffe67a"/>
+    <path d="M256 98 L380 138 Q384 292 256 414 Z" fill="#ffc81a" opacity=".55"/>
+    <text x="256" y="300" text-anchor="middle" font-size="170" font-family="Fredoka, 'Baloo 2', sans-serif" font-weight="700" fill="#6a3bd6" stroke="#1f2a44" stroke-width="12" paint-order="stroke" letter-spacing="-4">Ab</text>
+    <!-- sterretjes -->
+    <path d="M410 60 l12 28 30 3 -23 20 7 30 -26 -16 -26 16 7 -30 -23 -20 30 -3z" fill="#fff" stroke="#1f2a44" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M92 70 l8 18 20 2 -15 13 5 20 -18 -11 -18 11 5 -20 -15 -13 20 -2z" fill="#fff" stroke="#1f2a44" stroke-width="6" stroke-linejoin="round"/></g></g></svg>
